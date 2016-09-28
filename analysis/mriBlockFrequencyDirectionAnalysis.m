@@ -13,8 +13,8 @@ warning on;
 % Discover user name and set Dropbox path
 [~, userName] = system('whoami');
 userName = strtrim(userName);
-dropboxDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_data');
-saveDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis');
+dropboxDataDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_data');
+dropboxAnalysisDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis');
 
 % Define the session directories
 sessDirs = {...
@@ -27,41 +27,38 @@ sessDirs = {...
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
 
-
 for ss = 1:length(sessDirs)
-    % Clear some information
-    Data_Per_Segment = [];
-    uniqueCombos = [];
-    allDataTmp = [];
-    allIndicesTmp = [];
     
     % Extract some information about this session
     tmp = strsplit(sessDirs{ss}, '/');
-    params.sessionType = tmp{1};
-    params.sessionObserver = tmp{2};
-    params.sessionDate = tmp{3};
+    runParams.sessionType = tmp{1};
+    runParams.sessionObserver = tmp{2};
+    runParams.sessionDate = tmp{3};
     
     % Display some useful information
-    fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong> | <strong>%s</strong>\n', params.sessionType, params.sessionObserver, params.sessionDate);
-    
-    % Determine some parameters
-    params.TRDurSecs                    = 1.0;
-    
+    fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong> | <strong>%s</strong>\n', runParams.sessionType, runParams.sessionObserver, runParams.sessionDate);
+        
     % Make the packets
-    params.packetType       = 'fMRI';
-    params.sessionDir       = fullfile(dropboxDir, sessDirs{ss});
-    NRuns = length(listdir(fullfile(params.sessionDir, 'MatFiles', '*.mat'), 'files'));
+    runParams.packetType       = 'fMRI';
+    runParams.stimulusDir       = fullfile(dropboxDataDir, sessDirs{ss});
+    runParams.responseDir       = fullfile(dropboxAnalysisDir, sessDirs{ss});
+    nRuns = length(listdir(fullfile(runParams.stimulusDir, 'MatFiles', '*.mat'), 'files'));
     
     % Iterate over runs
-    for ii = 1:NRuns;
-        fprintf('\t* Run <strong>%g</strong> / <strong>%g</strong>\n', ii, NRuns);
+    for ii = 1:nRuns;
+        fprintf('\t* Run <strong>%g</strong> / <strong>%g</strong>\n', ii, nRuns);
         % Set up some parameters
-        params.runNum           = ii;
-        params.stimulusFile     = fullfile(params.sessionDir, 'MatFiles', [params.sessionObserver '-' params.sessionType '-' num2str(ii, '%02.f') '.mat']);
-%        params.responseFile     = fullfile(params.sessionDir, 'EyeTrackingFiles', [params.sessionObserver '-' params.sessionType '-' num2str(ii, '%02.f') '.mat']);
-%        [params.respValues params.respTimeBase] = loadPupilDataForPackets(params);
-        [params.stimValues,params.stimTimeBase,params.stimMetaData] = mriBlockFrequencyDirectionMakeStimStruct(params);
-        packets{ss, ii} = makePacket(params);
+        runParams.runNum           = ii;
+        runParams.stimulusFile     = fullfile(runParams.stimulusDir, 'MatFiles', [runParams.sessionObserver '-' runParams.sessionType '-' num2str(ii, '%02.f') '.mat']);
+        runParams.responseStructFile     = fullfile(runParams.responseDir, 'MatFiles', [runParams.sessionObserver '-' runParams.sessionType '-' num2str(ii, '%02.f') '.mat']);
+
+        % Get the stimulus structure
+        [runParams.stimValues,runParams.stimTimeBase,runParams.stimMetaData] = mriBlockFrequencyDirectionMakeStimStruct(runParams);
+        
+        % Get the response structure
+%        [runParams.responseValues,runParams.responseTimeBase,runParams.responseMetaData] = mriBlockFrequencyDirectionMLoadResponseStruct(runParams);
+
+        runPackets{ss, ii} = makePacket(runParams);
     end
     fprintf('\n');
 end
@@ -70,7 +67,7 @@ end
 NSessionsMerged = length(whichSessionsToMerge);
 for mm = 1:NSessionsMerged
     mergeIdx = whichSessionsToMerge{mm};
-    mergedPacket = {packets{mergeIdx, :}};
+    mergedPacket = {runPackets{mergeIdx, :}};
     mergedPacket = mergedPacket(~cellfun('isempty', mergedPacket));
     mergedPackets{mm} = mergedPacket;
 end

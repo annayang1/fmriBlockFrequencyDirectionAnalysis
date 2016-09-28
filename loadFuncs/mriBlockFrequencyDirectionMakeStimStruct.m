@@ -62,12 +62,24 @@ conditionArray = [stimulus.metaData.params.theDirections' stimulus.metaData.para
 [uniqueConditions, ~, idx] = unique(conditionArray, 'rows');
 metaData.stimTypes = idx;
 for ii = 1:length(uniqueConditions)
+    % Check if there is frequency information included
     if ~(stimulus.metaData.params.theFrequenciesHz == -1)
-        % Fill out here
+        metaData.stimLabels{ii}=stimulus.metaData.params.theFrequenciesHz(ii);
     else
         tmp = strsplit(stimulus.metaData.params.modulationFiles, ',');
         tmp = strsplit(tmp{conditionArray(ii, 1)}, '-');
         [~, tmp2] = fileparts(tmp{3});
-        metaData.stimLabels{ii} = [tmp{2} '_' tmp2 '_' num2str(100*stimulus.metaData.params.theContrastsPct(conditionArray(ii, 3))*stimulus.metaData.params.theContrastMax) '%'];
+        metaData.stimLabels{ii} = [tmp{2} '_' tmp2 '_' num2str(100*stimulus.metaData.params.theFrequenciesHz(conditionArray(ii, 3))) '%'];
     end
 end
+
+% Get and save the modulation direction
+if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'LightFlux'))
+    metaData.modulationDirection='LightFlux';
+end % check for LightFlux modulation
+if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'L-M'))
+    metaData.modulationDirection='L-M';
+end % check for LightFlux modulation
+if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'S'))
+    metaData.modulationDirection='S';
+end % check for LightFlux modulation
