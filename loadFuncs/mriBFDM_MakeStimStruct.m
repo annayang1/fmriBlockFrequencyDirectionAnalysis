@@ -1,5 +1,5 @@
-function [values,timebase,metaData] = mriBlockFrequencyDirectionMakeStimStruct(params)
-% function [values timebase metaData] = mriBlockFrequencyDirectionMakeStimStruct(params)
+function [values,timebase,metaData] = mriBFDM_LoadStimStruct(params)
+% function [values timebase metaData] = mriBFDM_MakeStimStruct(params)
 %
 %
 

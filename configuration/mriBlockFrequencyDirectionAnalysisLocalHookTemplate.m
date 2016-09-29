@@ -36,5 +36,13 @@ end
 
 addpath(genpath(['/Users/' userID '/Documents/MATLAB/Analysis/mriBlockFrequencyDirectionAnalysis']));
 
-system('sshfs -p 22 aguirre@chead:/data/jag/ ~/ccnCluster -oauto_cache,reconnect,defer_permissions,noappledouble,negative_vncache,volname=ccnCluster');
+% Mount the cluster
+%  use sshfs to mount the cluster to a defined mount point.
+%  Sometimes a spontaneous sshfs disconnection causes the mount point
+%  to become inaccessible from the file system and causes the system to
+%  hang. These steps are designed to reset the ssfhfs system to resolve
+%  this problem prior to connecting. IT WILL NUKE ALL RUNNING SSHFS JOBS.
 
+system('pkill -9 sshfs');
+system('umount -f ~/ccnCluster');
+system('sshfs -p 22 aguirre@chead:/data/jag/ ~/ccnCluster -oauto_cache,reconnect,defer_permissions,noappledouble,negative_vncache,volname=ccnCluster');
