@@ -35,3 +35,6 @@ switch userID
 end
 
 addpath(genpath(['/Users/' userID '/Documents/MATLAB/Analysis/mriBlockFrequencyDirectionAnalysis']));
+
+system('sshfs -p 22 aguirre@chead:/data/jag/ ~/ccnCluster -oauto_cache,reconnect,defer_permissions,noappledouble,negative_vncache,volname=ccnCluster');
+
