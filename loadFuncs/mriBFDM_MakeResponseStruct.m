@@ -1,29 +1,35 @@
-function [responseStruct] = mriBFDM_MakeResponseStruct(params)
-% [values,TimeVectorFine] = mriBFDM_MakeResponseStruct(params)
+function [values,timebase,metaData] = mriBFDM_MakeResponseStruct(makeResponseStructParams)
+% function [values,timebase,metaData] = mriBFDM_MakeResponseStruct(makeResponseStructParams)
 %
-% loads time series data
+%
 
-%% load the response
-resp                    = load_nifti(params.responseFile);
+%% load the response file
+resp                    = load_nifti(makeResponseStructParams.responseFile);
 
 % create the timebase
 TR                      = resp.pixdim(5)/1000;
 runDur                  = size(resp.vol,4);
-responseStruct.timebase = 0:TR:(runDur*TR)-TR;
+timebase = 0:TR:(runDur*TR)-TR;
 
 % load the region of interest
-roi                     = load_nifti(params.areasFile);
-regionIndicies                   = find(abs(roi.vol)==params.areasIndex);
+roi                     = load_nifti(makeResponseStructParams.areasFile);
+regionIndicies                   = find(abs(roi.vol)==makeResponseStructParams.areasIndex);
 volDims                 = size(resp.vol);
 flatVol                 = reshape(resp.vol,volDims(1)*volDims(2)*volDims(3),volDims(4));
-% Pull out the indicated region index signal
+
+% Assemble the values
 regionTimeSeries                = flatVol(regionIndicies,:);
 regionalSignal                = median(regionTimeSeries,1);
 timeSeriesMean=mean(regionalSignal);
 regionalSignal=(regionalSignal-timeSeriesMean)/timeSeriesMean*100;
-% add the response to the struct
-responseStruct.values=regionalSignal;
-responseStruct.metaData.packetType='bold';
-responseStruct.metaData.responseFile=params.responseFile;
-responseStruct.metaData.responseUnits='psc';
-responseStruct.metaData.originalTimeSeriesMean=timeSeriesMean;
+values=regionalSignal;
+
+% Assemble the metaData
+metaData.packetType='bold';
+metaData.responseFile=makeResponseStructParams.responseFile;
+metaData.responseFile=makeResponseStructParams.areasFile;
+metaData.responseUnits='%change';
+metaData.originalTimeSeriesMean=timeSeriesMean;
+
+% NEED TO DO SOME PROCESSING OF THE FILENAME HERE TO EXTRACT THE
+% INFORMATION IT CONTAINS REGARDING THE SERIES NUMBER, STIMULUS TYPE

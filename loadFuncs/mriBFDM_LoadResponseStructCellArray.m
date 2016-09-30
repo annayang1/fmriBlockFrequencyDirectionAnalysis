@@ -1,5 +1,5 @@
-function [stimStructCellAray] = mriBFDM_LoadResponseStructCellArray(userName)
-% function [stimStructCellAray] = mriBFDM_LoadResponseStructCellArray()
+function [responseStructCellAray] = mriBFDM_LoadResponseStructCellArray(userName)
+% function [responseStructCellAray] = mriBFDM_LoadResponseStructCellArray(userName)
 %
 %
 
@@ -20,38 +20,48 @@ responseSessDirs = {'MOUNT_SINAI/HERO_asb1/041416'};
 whichSessionsToMerge = {[1 2], [3 4]};
 whichSessionsToMerge = {[1]};
 
-for ss = 1:length(stimulusSessDirs)
+% Define the name of the response and areas file to load
+responseFileName='wdrf.tf.nii.gz';
+areasFileName='mh.areas.func.vol.nii.gz';
+areasIndex=1; % This indexes area V1
+
+for ss = 1:length(responseSessDirs)
     
-    % Extract some information about this session
-    tmp = strsplit(stimulusSessDirs{ss}, '/');
-    runParams.sessionType = tmp{1};
-    runParams.sessionObserver = tmp{2};
-    runParams.sessionDate = tmp{3};
+    % Extract some information about this session and put it into the
+    % params variable that will be passed to MakeStrimStruct
+    tmp = strsplit(responseSessDirs{ss}, '/');
+    makeResponseStructParams.sessionType = tmp{1};
+    makeResponseStructParams.sessionObserver = tmp{2};
+    makeResponseStructParams.sessionDate = tmp{3};
+    makeResponseStructParams.packetType       = 'fMRI';
+    makeResponseStructParams.responseDir       = fullfile(clusterDataDir, responseSessDirs{ss});
     
-    % Display some useful information
-    fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong> | <strong>%s</strong>\n', runParams.sessionType, runParams.sessionObserver, runParams.sessionDate);
+    runDirectoryList=listdir(fullfile(makeResponseStructParams.responseDir, 'Series*'), 'dirs');
+    nRuns=length(runDirectoryList);
         
-    % Make the packets
-    runParams.packetType       = 'fMRI';
-    runParams.stimulusDir       = fullfile(dropboxDataDir, stimulusSessDirs{ss});
-    runParams.responseDir       = fullfile(dropboxAnalysisDir, stimulusSessDirs{ss});
-    nRuns = length(listdir(fullfile(runParams.stimulusDir, 'session*', 'wdrf.tf.nii.gz'), 'files'));
+    % Display some useful information
+    fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong> | <strong>%s</strong>\n', makeResponseStructParams.sessionType, makeResponseStructParams.sessionObserver, makeResponseStructParams.sessionDate);
+
+    nRuns=2;
     
     % Iterate over runs
     for ii = 1:nRuns;
         fprintf('\t* Run <strong>%g</strong> / <strong>%g</strong>\n', ii, nRuns);
-        % Set up some parameters
-        runParams.runNum           = ii;
-        runParams.stimulusFile     = fullfile(runParams.stimulusDir, 'MatFiles', [runParams.sessionObserver '-' runParams.sessionType '-' num2str(ii, '%02.f') '.mat']);
-        runParams.responseStructFile     = fullfile(runParams.responseDir, 'MatFiles', [runParams.sessionObserver '-' runParams.sessionType '-' num2str(ii, '%02.f') '.mat']);
+        % Further define the params
+        makeResponseStructParams.runNum           = ii;
+        makeResponseStructParams.responseFile = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), responseFileName);
+        makeResponseStructParams.areasFile    = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), areasFileName);
 
-        % Get the stimulus structure
-        [runParams.stimValues,runParams.stimTimeBase,runParams.stimMetaData] = mriBlockFrequencyDirectionMakeStimStruct(runParams);
+        % Convert the file names from cell arrays to strings
+        makeResponseStructParams.responseFile=makeResponseStructParams.responseFile{1};
+        makeResponseStructParams.areasFile=makeResponseStructParams.areasFile{1};
+        makeResponseStructParams.areasIndex=1;
         
-        % Get the response structure
-%        [runParams.responseValues,runParams.responseTimeBase,runParams.responseMetaData] = mriBlockFrequencyDirectionMLoadResponseStruct(runParams);
-
-        runPackets{ss, ii} = makePacket(runParams);
+        % Make the response structure
+        [preMergeResponseStructCellArray{ss, ii}.values, ...
+         preMergeResponseStructCellArray{ss, ii}.timebase, ...
+         preMergeResponseStructCellArray{ss, ii}.metaData] = mriBFDM_MakeResponseStruct(makeResponseStructParams);
+        
     end
     fprintf('\n');
 end
@@ -60,7 +70,7 @@ end
 NSessionsMerged = length(whichSessionsToMerge);
 for mm = 1:NSessionsMerged
     mergeIdx = whichSessionsToMerge{mm};
-    mergedPacket = {runPackets{mergeIdx, :}};
-    mergedPacket = mergedPacket(~cellfun('isempty', mergedPacket));
-    mergedPackets{mm} = mergedPacket;
+    tempMerge = {preMergeResponseStructCellArray{mergeIdx, :}};
+    tempMerge = tempMerge(~cellfun('isempty', tempMerge));
+    responseStructCellAray{mm} = tempMerge;
 end

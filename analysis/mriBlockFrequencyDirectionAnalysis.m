@@ -18,34 +18,8 @@ userName = strtrim(userName);
 [stimStructCellAray] = mriBFDM_LoadStimStructCellArray(userName);
 
 % obtain the response structures for all sessions and run
-[responseStructCellAray] = mriBFDM_LoadResponseStructCellArray(userName);
+%[responseStructCellArray] = mriBFDM_LoadResponseStructCellArray(userName);
 
-
-
-
-
-
-
-% 1 -> use canonical HRF, 0 -> extract HRF using FIR
-bCanonicalHRF = 0;
-
-% Boolean: 1 -> go into debug mode--only fit light flux A
-bDEBUG = 0;
-bFreeFloatParams = 1;
-
-
-%% LOAD TIME SERIES AND GET STIMULUS (& ATTENTION) START TIMES
-
-% load time series
-[avgTS, avgTSprc, tsFileNames, stimTypeArr, runOrder] ...
-= loadTimeSeriesData(subj_name,session);
-
-% get all stimulus values and start times, as well as the attention task
-% start times
-[startTimesSorted, stimValuesSorted, attnStartTimes] = mriBlockFrequencyDirectionMakeStimStruct(subj_name,session);
-
-% Time Series sampling points
-TS_timeSamples = [1:336]-1;
 
 %% HRF PARAMETERS
 

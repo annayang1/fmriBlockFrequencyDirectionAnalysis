@@ -1,11 +1,11 @@
-function [values,timebase,metaData] = mriBFDM_LoadStimStruct(params)
-% function [values timebase metaData] = mriBFDM_MakeStimStruct(params)
+function [values,timebase,metaData] = mriBFDM_MakeStimStruct(makeStimStructParams)
+% function [values,timebase,metaData] = mriBFDM_MakeStimStruct(makeStimStructParams)
 %
 %
 
 %% Stimulus
 % Load that .mat file produced by the stimulus computer
-stimulus.metaData                           = load(params.stimulusFile);
+stimulus.metaData                           = load(makeStimStructParams.stimulusFile);
 % Get run duration
 runDur                                      = sum(stimulus.metaData.params.trialDuration)*1000; % length of run (msec)
 % Set the timebase
@@ -86,7 +86,7 @@ if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'S'))
 end % check for LightFlux modulation
 
 % Copy relevant param info from the passed makeStimStructParams into the
-% stimulus.metaData field
+% metaData structure
 
 metaData.sessionType=makeStimStructParams.sessionType;
 metaData.sessionObserver = makeStimStructParams.sessionObserver;
@@ -94,4 +94,4 @@ metaData.sessionDate = makeStimStructParams.sessionDate;
 metaData.stimulusDir = makeStimStructParams.stimulusDir;
 metaData.runNum = makeStimStructParams.runNum;
 metaData.stimulusFile = makeStimStructParams.stimulusFile;
-metaData.experimentTimeDateString = stimulus.metaData.experimentTimeDateString;
+metaData.experimentTimeDateString = stimulus.metaData.exp.experimentTimeDateString;
