@@ -3,7 +3,7 @@
 % Code to analyze data collected at Mt. Sinai using 12-second blocked
 %  stimulus presentations of uniform field flicker between 2 and 64 Hz,
 %  with different modulation directions (Light flux, L-M, and S) in
-%  separate runs. The stimuli had a three-second half-cosine window at
+%  separate runs. The stimuli had a 1.5 second half-cosine window at
 %  onset and offset.
 
 % Housekeeping

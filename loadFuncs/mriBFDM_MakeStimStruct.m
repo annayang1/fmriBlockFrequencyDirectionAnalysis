@@ -11,6 +11,8 @@ runDur                                      = sum(stimulus.metaData.params.trial
 % Set the timebase
 stimulus.timebase                           = 0:runDur-1;
 zVect                                       = zeros(1,runDur);
+
+% Loop through the event instances
 for j = 1:size(stimulus.metaData.params.responseStruct.events,2)
     % phase offset
     if ~isempty(stimulus.metaData.params.thePhaseOffsetSec)
@@ -51,13 +53,12 @@ for j = 1:size(stimulus.metaData.params.responseStruct.events,2)
     thisStim                                = thisStim(1:runDur); % trim events past end of run (occurs for stimuli presented near the end of the run)
     % save stimulus values
     stimulus.values(j,:)                    = thisStim;
-end
+end % loop through stimulus instances
+
 timebase = stimulus.timebase;
 values = stimulus.values;
 
-% Trim meta data. Extract the relevant information. We assume that stimulus
-% types are described by direction, frequency, and contrast. This might
-% change.
+% Construct the stimulus types and labels
 conditionArray = [stimulus.metaData.params.theDirections' stimulus.metaData.params.theFrequencyIndices' stimulus.metaData.params.theContrastRelMaxIndices'];
 [uniqueConditions, ~, idx] = unique(conditionArray, 'rows');
 metaData.stimTypes = idx;
@@ -83,3 +84,14 @@ end % check for LightFlux modulation
 if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'S'))
     metaData.modulationDirection='S';
 end % check for LightFlux modulation
+
+% Copy relevant param info from the passed makeStimStructParams into the
+% stimulus.metaData field
+
+metaData.sessionType=makeStimStructParams.sessionType;
+metaData.sessionObserver = makeStimStructParams.sessionObserver;
+metaData.sessionDate = makeStimStructParams.sessionDate;
+metaData.stimulusDir = makeStimStructParams.stimulusDir;
+metaData.runNum = makeStimStructParams.runNum;
+metaData.stimulusFile = makeStimStructParams.stimulusFile;
+metaData.experimentTimeDateString = stimulus.metaData.experimentTimeDateString;

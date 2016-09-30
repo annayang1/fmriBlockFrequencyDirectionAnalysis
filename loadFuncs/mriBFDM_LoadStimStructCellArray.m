@@ -43,9 +43,9 @@ for ss = 1:length(stimulusSessDirs)
         makeStimStructParams.stimulusFile     = fullfile(makeStimStructParams.stimulusDir, 'MatFiles', [makeStimStructParams.sessionObserver '-' makeStimStructParams.sessionType '-' num2str(ii, '%02.f') '.mat']);
 
         % Make the stimulus structure
-        [stimStructCellArray{ss, ii}.values, ...
-         stimStructCellArray{ss, ii}.timebase, ...
-         stimStructCellArray{ss, ii}.metaData] = mriBFDM_MakeStimStruct(makeStimStructParams);
+        [preMergeStimStructCellArray{ss, ii}.values, ...
+         preMergeStimStructCellArray{ss, ii}.timebase, ...
+         preMergeStimStructCellArray{ss, ii}.metaData] = mriBFDM_MakeStimStruct(makeStimStructParams);
     end
     fprintf('\n');
 end
@@ -54,7 +54,7 @@ end
 NSessionsMerged = length(whichSessionsToMerge);
 for mm = 1:NSessionsMerged
     mergeIdx = whichSessionsToMerge{mm};
-    mergedPacket = {runPackets{mergeIdx, :}};
-    mergedPacket = mergedPacket(~cellfun('isempty', mergedPacket));
-    mergedPackets{mm} = mergedPacket;
+    tempMerge = {preMergeStimStructCellArray{mergeIdx, :}};
+    tempMerge = tempMerge(~cellfun('isempty', tempMerge));
+    stimStructCellArray{mm} = tempMerge;
 end
