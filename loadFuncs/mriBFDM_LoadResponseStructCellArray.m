@@ -4,7 +4,7 @@ function [stimStructCellAray] = mriBFDM_LoadResponseStructCellArray(userName)
 %
 
 % Set Cluster path used to load the response data files
-clusterDataDir=fullfile('/Users', userName, 'ccnCluster/MELA/');
+clusterDataDir=fullfile('/Users', userName, 'ccnClusterPseudo/MELA/');
 
 % Define the response file session directories
 responseSessDirs = {...
@@ -14,8 +14,11 @@ responseSessDirs = {...
     'MOUNT_SINAI/HERO_gka1/041516' ...
     };
 
+responseSessDirs = {'MOUNT_SINAI/HERO_asb1/041416'};
+
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
+whichSessionsToMerge = {[1]};
 
 for ss = 1:length(stimulusSessDirs)
     
@@ -32,7 +35,7 @@ for ss = 1:length(stimulusSessDirs)
     runParams.packetType       = 'fMRI';
     runParams.stimulusDir       = fullfile(dropboxDataDir, stimulusSessDirs{ss});
     runParams.responseDir       = fullfile(dropboxAnalysisDir, stimulusSessDirs{ss});
-    nRuns = length(listdir(fullfile(runParams.stimulusDir, 'MatFiles', '*.mat'), 'files'));
+    nRuns = length(listdir(fullfile(runParams.stimulusDir, 'session*', 'wdrf.tf.nii.gz'), 'files'));
     
     % Iterate over runs
     for ii = 1:nRuns;

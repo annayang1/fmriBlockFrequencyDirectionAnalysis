@@ -1,8 +1,7 @@
-function [mergedPackets] = mriBFDM_LoadStimStructCellArray(userName)
+function [stimStructCellArray] = mriBFDM_LoadStimStructCellArray(userName)
 % function [stimStructCellAray] = mriBFDM_LoadStimStructCellArray()
 %
 %
-
 
 % Set Dropbox path used to load the stimulus specification files
 dropboxDataDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_data');
@@ -15,40 +14,38 @@ stimulusSessDirs = {...
     'HCLV_Photo_7T/HERO_gka1/041516' ...
     };
 
+stimulusSessDirs = {'HCLV_Photo_7T/HERO_asb1/041416'};
+
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
+whichSessionsToMerge = {[1]};
 
 for ss = 1:length(stimulusSessDirs)
     
-    % Extract some information about this session
+    % Extract some information about this session and put it into the
+    % params variable that will be passed to MakeStrimStruct
     tmp = strsplit(stimulusSessDirs{ss}, '/');
-    runParams.sessionType = tmp{1};
-    runParams.sessionObserver = tmp{2};
-    runParams.sessionDate = tmp{3};
+    makeStimStructParams.sessionType = tmp{1};
+    makeStimStructParams.sessionObserver = tmp{2};
+    makeStimStructParams.sessionDate = tmp{3};
+    makeStimStructParams.packetType       = 'fMRI';
+    makeStimStructParams.stimulusDir       = fullfile(dropboxDataDir, stimulusSessDirs{ss});
+    nRuns = length(listdir(fullfile(makeStimStructParams.stimulusDir, 'MatFiles', '*.mat'), 'files'));
     
     % Display some useful information
-    fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong> | <strong>%s</strong>\n', runParams.sessionType, runParams.sessionObserver, runParams.sessionDate);
-        
-    % Make the packets
-    runParams.packetType       = 'fMRI';
-    runParams.stimulusDir       = fullfile(dropboxDataDir, stimulusSessDirs{ss});
-    nRuns = length(listdir(fullfile(runParams.stimulusDir, 'MatFiles', '*.mat'), 'files'));
-    
+    fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong> | <strong>%s</strong>\n', makeStimStructParams.sessionType, makeStimStructParams.sessionObserver, makeStimStructParams.sessionDate);
+
     % Iterate over runs
     for ii = 1:nRuns;
         fprintf('\t* Run <strong>%g</strong> / <strong>%g</strong>\n', ii, nRuns);
-        % Set up some parameters
-        runParams.runNum           = ii;
-        runParams.stimulusFile     = fullfile(runParams.stimulusDir, 'MatFiles', [runParams.sessionObserver '-' runParams.sessionType '-' num2str(ii, '%02.f') '.mat']);
-%        runParams.responseStructFile     = fullfile(runParams.responseDir, 'MatFiles', [runParams.sessionObserver '-' runParams.sessionType '-' num2str(ii, '%02.f') '.mat']);
+        % Further define the params
+        makeStimStructParams.runNum           = ii;
+        makeStimStructParams.stimulusFile     = fullfile(makeStimStructParams.stimulusDir, 'MatFiles', [makeStimStructParams.sessionObserver '-' makeStimStructParams.sessionType '-' num2str(ii, '%02.f') '.mat']);
 
-        % Get the stimulus structure
-        [runParams.stimValues,runParams.stimTimeBase,runParams.stimMetaData] = mriBFDM_MakeStimStruct(runParams);
-        
-        % Get the response structure
-%        [runParams.responseValues,runParams.responseTimeBase,runParams.responseMetaData] = mriBlockFrequencyDirectionMLoadResponseStruct(runParams);
-
-        thePackets{ss, ii} = thePackets{ss,
+        % Make the stimulus structure
+        [stimStructCellArray{ss, ii}.values, ...
+         stimStructCellArray{ss, ii}.timebase, ...
+         stimStructCellArray{ss, ii}.metaData] = mriBFDM_MakeStimStruct(makeStimStructParams);
     end
     fprintf('\n');
 end
