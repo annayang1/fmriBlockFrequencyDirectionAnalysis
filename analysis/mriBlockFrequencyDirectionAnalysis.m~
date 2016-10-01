@@ -13,8 +13,10 @@ warning on;
 %    [] - load and process stim/response files, do not save packets
 %    'save' - load and process stim/response files, save the packets
 %    'load' - load the packets from the passed hash name
+%    'compare' - load and process stim/response files, compare the hash of
+%        the resulting packets to the passed hash
 packetCacheBehavior='load';
-packetCellArrayMD5HashToLoad='c18e7e45e23e42e39dcc1df17faf6b77';
+packetCacheHashToLoad='c18e7e45e23e42e39dcc1df17faf6b77';
 
 % Discover user name
 [~, userName] = system('whoami');
@@ -32,20 +34,21 @@ if ~strcmp(packetCacheBehavior,'load')
     [packetCellArray] = mriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray );
     
     % calculate the hex MD5 for the packetCellArray
-    packetCellArrayMD5Hash = DataHash(packetCellArray);
+    packetCellArray_MD5Hash = DataHash(packetCellArray);
 else
     % load a cached packetCellArray
     dropboxAnalysisDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/mriBlockFrequencyDirectionAnalysis/packetCache');
-    packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayMD5HashToLoad '.mat']);
-    load(packetCacheFileName);
+    packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArray_MD5Hash '.mat']);
+
 end
+
 
 
 % Save the packetCellArray if so instructed
 if strcmp(packetCacheBehavior,'save')
     % Set path to the packetCache and save it using the MD5 hash name
     dropboxAnalysisDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/mriBlockFrequencyDirectionAnalysis/packetCache');
-    packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayMD5Hash '.mat']);
+    packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArray_MD5Hash '.mat']);
     save(packetCacheFileName,'packetCellArray');
 end
 
