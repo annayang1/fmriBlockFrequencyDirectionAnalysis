@@ -30,7 +30,6 @@ for ss = 1:length(responseSessDirs)
     % Extract some information about this session and put it into the
     % params variable that will be passed to MakeStrimStruct
     tmp = strsplit(responseSessDirs{ss}, '/');
-    makeResponseStructParams.sessionType = tmp{1};
     makeResponseStructParams.sessionObserver = tmp{2};
     makeResponseStructParams.sessionDate = tmp{3};
     makeResponseStructParams.packetType       = 'fMRI';
@@ -40,9 +39,7 @@ for ss = 1:length(responseSessDirs)
     nRuns=length(runDirectoryList);
         
     % Display some useful information
-    fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong> | <strong>%s</strong>\n', makeResponseStructParams.sessionType, makeResponseStructParams.sessionObserver, makeResponseStructParams.sessionDate);
-
-    nRuns=2;
+    fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong>\n', makeResponseStructParams.sessionObserver, makeResponseStructParams.sessionDate);
     
     % Iterate over runs
     for ii = 1:nRuns;
@@ -52,6 +49,17 @@ for ss = 1:length(responseSessDirs)
         makeResponseStructParams.responseFile = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), responseFileName);
         makeResponseStructParams.areasFile    = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), areasFileName);
 
+        % Grab some stimulus information from the file name
+        tmp = strsplit(runDirectoryList{ii}, '_');
+        makeResponseStructParams.scanNumber=char(tmp(2));
+        makeResponseStructParams.modulationDirection=char(tmp(7));
+        makeResponseStructParams.blockOrder=char(tmp(8));
+        
+        % Handle the idiosyncratic naming convention for the L-M modulation
+        if strcmp(makeResponseStructParams.modulationDirection,'L')
+            makeResponseStructParams.modulationDirection='L-M';
+        end
+        
         % Convert the file names from cell arrays to strings
         makeResponseStructParams.responseFile=makeResponseStructParams.responseFile{1};
         makeResponseStructParams.areasFile=makeResponseStructParams.areasFile{1};
@@ -74,3 +82,6 @@ for mm = 1:NSessionsMerged
     tempMerge = tempMerge(~cellfun('isempty', tempMerge));
     responseStructCellAray{mm} = tempMerge;
 end
+
+% Remove the outer cell shell
+responseStructCellAray=responseStructCellAray{1};

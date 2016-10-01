@@ -30,6 +30,8 @@ metaData.responseFile=makeResponseStructParams.responseFile;
 metaData.responseFile=makeResponseStructParams.areasFile;
 metaData.responseUnits='%change';
 metaData.originalTimeSeriesMean=timeSeriesMean;
-
-% NEED TO DO SOME PROCESSING OF THE FILENAME HERE TO EXTRACT THE
-% INFORMATION IT CONTAINS REGARDING THE SERIES NUMBER, STIMULUS TYPE
+metaData.scanNumber=makeResponseStructParams.scanNumber;
+metaData.modulationDirection=makeResponseStructParams.modulationDirection;
+metaData.blockOrder=makeResponseStructParams.blockOrder;
+metaData.sessionObserver=makeResponseStructParams.sessionObserver;
+metaData.sessionDate=makeResponseStructParams.sessionDate;

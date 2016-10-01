@@ -78,12 +78,12 @@ end
 if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'LightFlux'))
     metaData.modulationDirection='LightFlux';
 end % check for LightFlux modulation
-if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'L-M'))
+if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'LMinusM'))
     metaData.modulationDirection='L-M';
-end % check for LightFlux modulation
+end % check for L-M modulation
 if ~isempty(strfind(stimulus.metaData.params.cacheFileName{1},'S'))
     metaData.modulationDirection='S';
-end % check for LightFlux modulation
+end % check for S modulation
 
 % Copy relevant param info from the passed makeStimStructParams into the
 % metaData structure
