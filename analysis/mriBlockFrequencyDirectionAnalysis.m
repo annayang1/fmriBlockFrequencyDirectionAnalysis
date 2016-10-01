@@ -14,7 +14,7 @@ warning on;
 %    'save' - load and process stim/response files, save the packets
 %    'load' - load the packets from the passed hash name
 packetCacheBehavior='load';
-packetCellArrayMD5HashToLoad='c18e7e45e23e42e39dcc1df17faf6b77';
+packetCellArrayMD5HashToLoad='357dce2587b65b25b6a7352b1c158368';
 
 % Discover user name
 [~, userName] = system('whoami');
@@ -39,7 +39,6 @@ else
     packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayMD5HashToLoad '.mat']);
     load(packetCacheFileName);
 end
-
 
 % Save the packetCellArray if so instructed
 if strcmp(packetCacheBehavior,'save')

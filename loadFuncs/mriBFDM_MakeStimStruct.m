@@ -87,7 +87,6 @@ end % check for S modulation
 
 % Copy relevant param info from the passed makeStimStructParams into the
 % metaData structure
-
 metaData.sessionType=makeStimStructParams.sessionType;
 metaData.sessionObserver = makeStimStructParams.sessionObserver;
 metaData.sessionDate = makeStimStructParams.sessionDate;
@@ -95,3 +94,7 @@ metaData.stimulusDir = makeStimStructParams.stimulusDir;
 metaData.runNum = makeStimStructParams.runNum;
 metaData.stimulusFile = makeStimStructParams.stimulusFile;
 metaData.experimentTimeDateString = stimulus.metaData.exp.experimentTimeDateString;
+
+% Get the timing of the attention events and put this in the metaData
+eventTimesArray=mriBFDM_GetAttentionEvents(stimulus.metaData.params);
+metaData.eventTimesArray=eventTimesArray;
