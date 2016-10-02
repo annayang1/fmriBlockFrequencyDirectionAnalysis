@@ -21,7 +21,7 @@ for ss=1:nSubjects
             [ kernelStruct ] = ...
                 mriBFDM_FitFourierBasis(thePacket, msecsToModel, ...
                 deltaTmsecsToModel, frequenciesToModel);
-            thePacket.kernel=kernelStruct;
+            thePacket.metaData.fourierFitToAttentionEvents=kernelStruct;
             packetCellArray{ss,rr}=thePacket;
         end
     end

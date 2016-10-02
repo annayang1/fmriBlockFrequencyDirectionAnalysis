@@ -14,7 +14,7 @@ warning on;
 userName = strtrim(userName);
 
 % Define packetCacheBehavior. Options include:
-%    'save' - load and process stim/response files, save the packets
+%    'make' - load and process stim/response files, save the packets
 %    'load' - load the packets from the passed hash name
 
 packetCacheBehavior='load';
@@ -24,7 +24,8 @@ dropboxAnalysisDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard La
 %% Create or load the packetCellArray
 
 switch packetCacheBehavior
-    case 'save'  % If we are not to load the packetCellArray, then we must generate it
+    
+    case 'make'  % If we are not to load the packetCellArray, then we must generate it
         
         % obtain the stimulus structures for all sessions and runs
         [stimStructCellArray] = mriBFDM_LoadStimStructCellArray(userName);
@@ -44,6 +45,7 @@ switch packetCacheBehavior
         
     case 'load'  % load a cached packetCellArray
         
+        fprintf('>> Loading cached packetCellArray\n');
         packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayMD5Hash '.mat']);
         load(packetCacheFileName);
         
@@ -52,15 +54,19 @@ switch packetCacheBehavior
         error('Please define a legal packetCacheBehavior');
 end
 
-% Derive the HRF from the attention events for each packet, and store in
-% the kernel field for each packet
+% Derive the HRF from the attention events for each packet, and store it in
+% packetCellArray{}.metaData.fourierFitToAttentionEvents.[values,timebase]
 
 [packetCellArray] = mriBDFM_DeriveHRFsForPacketCellArray(packetCellArray);
 
-% Average the HRFs from each run across all sessions for a subject
+% Create an average HRF for each subject across all runs
 
-nSubjects=size(packetCellArray,1);
-nRuns=size(packetCellArray,2);
-for ss=1:nSubjects
-    
-end % loop across subjects
+[hrfKernelStructCellArray] = mriBDFN_CreateSubjectAverageHRFs(packetCellArray);
+
+% Model and remove the attention events from the responses in each packet
+
+[packetCellArray] = mriBDFM_RegressAttentionEventsFromPacketCellArray(packetCellArray, hrfKernelStructCellArray);
+
+% Fit the time-series data from each packet
+
+[packetCellArray] = mriBDFM_FitModelToPacketCellArray(packetCellArray, hrfKernelStructCellArray);
