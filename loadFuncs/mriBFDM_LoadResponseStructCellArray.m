@@ -25,6 +25,8 @@ responseFileName='wdrf.tf.nii.gz';
 areasFileName='mh.areas.func.vol.nii.gz';
 areasIndex=1; % This indexes area V1
 
+fprintf('>> Creating response structures\n');
+
 for ss = 1:length(responseSessDirs)
     
     % Extract some information about this session and put it into the

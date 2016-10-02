@@ -58,9 +58,3 @@ end
 [packetCellArray] = mriBDFM_DeriveHRFsForPacketCellArray(packetCellArray);
 
 % Average the HRFs from each run across all sessions for a subject
-
-nSubjects=size(packetCellArray,1);
-nRuns=size(packetCellArray,2);
-for ss=1:nSubjects
-    
-end % loop across subjects

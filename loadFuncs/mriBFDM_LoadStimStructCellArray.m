@@ -20,6 +20,8 @@ stimulusSessDirs = {'HCLV_Photo_7T/HERO_asb1/041416'};
 whichSessionsToMerge = {[1 2], [3 4]};
 whichSessionsToMerge = {[1]};
 
+fprintf('>> Creating stimulus structures\n');
+
 for ss = 1:length(stimulusSessDirs)
     
     % Extract some information about this session and put it into the
