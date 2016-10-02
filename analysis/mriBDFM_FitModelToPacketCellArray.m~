@@ -24,14 +24,18 @@ for ss=1:nSubjects
             % put the hrf in the kernel field
             thePacket.kernel=hrfKernelStructCellArray{ss};
 
-            % scale the kernel to retain unit amplitude
+            % scale the kernel to retain unit amplit
             thePacket.kernel.values=thePacket.kernel.values/(sum(thePacket.kernel.values)*1000);
+
             
             % downsample the stimulus values to 100 ms deltaT
             totalResponseDuration=thePacket.response.metaData.TRmsecs * ...
                 length(thePacket.response.values);
             newStimulusTimebase=linspace(0,totalResponseDuration-100,totalResponseDuration/100);
             thePacket.stimulus=temporalFit.resampleTimebase(thePacket.stimulus,newStimulusTimebase);
+
+            % Set the response.values to have a minimum value of zero
+            thePacket.response.values=thePacket.response.values-min(thePacket.response.values);
             
             % How many trial instances are in this packet?
             defaultParamsInfo.nInstances = size(thePacket.stimulus.values,2);
