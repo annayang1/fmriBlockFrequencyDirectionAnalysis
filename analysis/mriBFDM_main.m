@@ -73,4 +73,12 @@ plot(hrfKernelStructCellArray{1}.timebase,hrfKernelStructCellArray{1}.values);
 
 % Fit the time-series data from each packet
 
+nSubjects=size(packetCellArray,1);
+nRuns=size(packetCellArray,2);
+
+for ss=1:nSubjects
+    for rr=1:nRuns
+    end % loop over runs
+end % loop over subjects
+
 [packetCellArray] = mriBDFM_FitModelToPacketCellArray(packetCellArray, hrfKernelStructCellArray);
