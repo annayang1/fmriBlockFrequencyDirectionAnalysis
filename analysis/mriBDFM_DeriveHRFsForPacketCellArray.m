@@ -1,12 +1,10 @@
 function [packetCellArray] = mriBDFM_DeriveHRFsForPacketCellArray(packetCellArray)
 % function [packetCellArray] = mriBDFM_DeriveHRFsForPacketCellArray(packetCellArray)
 %
-%
 
 % Set some parameters for the HRF derivation
 msecsToModel=16000;
-deltaTmsecsToModel=1000;
-frequenciesToModel=16;
+numFourierComponents=16;
 
 nSubjects=size(packetCellArray,1);
 nRuns=size(packetCellArray,2);
@@ -20,8 +18,8 @@ for ss=1:nSubjects
             fprintf('\t* Session <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
             [ kernelStruct ] = ...
                 mriBFDM_FitFourierBasis(thePacket, msecsToModel, ...
-                deltaTmsecsToModel, frequenciesToModel);
-            thePacket.metaData.fourierFitToAttentionEvents=kernelStruct;
+                numFourierComponents);
+            thePacket.response.metaData.fourierFitToAttentionEvents=kernelStruct;
             packetCellArray{ss,rr}=thePacket;
         end
     end

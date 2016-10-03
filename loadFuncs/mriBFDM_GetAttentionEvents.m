@@ -1,9 +1,8 @@
 function eventTimesArray = mriBFDM_GetAttentionEvents(params)
 % function eventTimesArray = mriBFDM_GetAttentionEvents(params)
 %
-
-% THIS STILL NEEDS TO ACCOUNT FOR THE PRECISE TIMING OF THE EVENT WITHIN
-% THE STIMULUS BLOCL
+% Returns an array of attention events for a given run
+%
 
 nTrials=params.nTrials;
 

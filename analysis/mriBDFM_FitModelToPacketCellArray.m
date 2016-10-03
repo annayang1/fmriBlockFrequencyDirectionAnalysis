@@ -21,8 +21,8 @@ for ss=1:nSubjects
         if ~isempty(thePacket)
             fprintf('\t* Session <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
             
-            % put the hrf in the kernel field
-            thePacket.kernel=hrfKernelStructCellArray{ss};
+            % grab the average hrf and prepare it as a kernel
+            thePacket.kernel=prepareHRFKernel(hrfKernelStructCellArray{ss});
 
             % scale the kernel to retain unit amplitude
             thePacket.kernel.values=thePacket.kernel.values/(sum(thePacket.kernel.values)*1000);

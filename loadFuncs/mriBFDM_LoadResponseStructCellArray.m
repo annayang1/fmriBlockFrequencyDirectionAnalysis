@@ -51,6 +51,10 @@ for ss = 1:length(responseSessDirs)
         makeResponseStructParams.responseFile = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), responseFileName);
         makeResponseStructParams.areasFile    = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), areasFileName);
 
+        % Identify if this is stim order A or B from the runDirectory name
+        tmp = strsplit(runDirectoryList{ii},'_');
+        makeResponseStructParams.stimulusOrderAorB=tmp{end-1};
+        
         % Grab some stimulus information from the file name
         tmp = strsplit(runDirectoryList{ii}, '_');
         makeResponseStructParams.scanNumber=char(tmp(2));

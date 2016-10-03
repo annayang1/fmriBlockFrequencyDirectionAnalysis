@@ -20,12 +20,23 @@ for ss=1:nSubjects
         if ~isempty(thePacket)
             fprintf('\t* Session <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
             
-            tempPacket=thePacket;
-            tempPacket.stimulus.values=zeros(1,size(thePacket.stimulus.timebase,2));
-            tempPacket.stimulus.values(1,thePacket.stimulus.metaData.eventTimesArray)=50;
-            tempPacket.stimulus.values= ...
-                    tempPacket.stimulus.values-mean(tempPacket.stimulus.values);
-            tempPacket.kernel=hrfKernelStructCellArray{ss};
+            % create a stimulusStruct that models the attention events as
+            % impulses
+            stimulusStruct.timebase=thePacket.stimulus.timebase;
+            stimulusStruct.values=stimulusStruct.timebase*0;
+            stimulusStruct.values(1,thePacket.stimulus.metaData.eventTimesArray)=1;
+            stimulusStruct.values= ...
+                    stimulusStruct.values-mean(stimulusStruct.values);
+
+            % prepare kernelStruct from the mean HRF for each subject
+            kernelStruct=prepareHRFKernel(hrfKernelStructCellArray{ss});
+            
+            % assemble a tempPacket to be used for the fitting
+            tempPacket.response = thePacket.response;
+            tempPacket.stimulus = stimulusStruct;
+            tempPacket.kernel = kernelStruct;
+            tempPacket.metaData = [];
+            
             defaultParamsInfo.nInstances = 1;
             [paramsFit,~,modelResponseStruct] = ...
                 temporalFit.fitResponse(tempPacket,...
@@ -35,6 +46,7 @@ for ss=1:nSubjects
             
             % remove the modeled attention event response from the data
             thePacket.response.values=thePacket.response.values-modelResponseStruct.values;
+            
         end % not an empty packet
     end % loop over runs
 end % loop over subjects

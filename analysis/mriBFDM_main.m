@@ -18,7 +18,7 @@ userName = strtrim(userName);
 %    'load' - load the packets from the passed hash name
 
 packetCacheBehavior='load';
-packetCellArrayMD5Hash='798590b572d3c6550f3b81e73c36f13d';
+packetCellArrayMD5Hash='c9280c61bcc3a366c0f8ddf8eaae29e4';
 dropboxAnalysisDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/mriBlockFrequencyDirectionAnalysis/packetCache');
 
 %% Create or load the packetCellArray
@@ -55,13 +55,17 @@ switch packetCacheBehavior
 end
 
 % Derive the HRF from the attention events for each packet, and store it in
-% packetCellArray{}.metaData.fourierFitToAttentionEvents.[values,timebase]
+% packetCellArray{}.response.metaData.fourierFitToAttentionEvents.[values,timebase]
 
 [packetCellArray] = mriBDFM_DeriveHRFsForPacketCellArray(packetCellArray);
 
 % Create an average HRF for each subject across all runs
 
 [hrfKernelStructCellArray] = mriBDFN_CreateSubjectAverageHRFs(packetCellArray);
+
+% Plot the average HRF for each subject
+
+plot(hrfKernelStructCellArray{1}.timebase,hrfKernelStructCellArray{1}.values);
 
 % Model and remove the attention events from the responses in each packet
 

@@ -95,6 +95,14 @@ metaData.runNum = makeStimStructParams.runNum;
 metaData.stimulusFile = makeStimStructParams.stimulusFile;
 metaData.experimentTimeDateString = stimulus.metaData.exp.experimentTimeDateString;
 
+% Get the stimulus ordering (A or B) from the protocol file name, and save
+% this information in the metaData. This is derived from the last
+% characeter of the protocol name.
+tmp=stimulus.metaData.exp.protocolList(stimulus.metaData.exp.protocolIndex).name;
+metaData.stimulusOrderAorB = tmp(end:end);
+
 % Get the timing of the attention events and put this in the metaData
 eventTimesArray=mriBFDM_GetAttentionEvents(stimulus.metaData.params);
 metaData.eventTimesArray=eventTimesArray;
+
+
