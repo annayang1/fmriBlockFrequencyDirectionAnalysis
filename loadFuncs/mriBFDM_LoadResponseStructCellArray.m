@@ -79,7 +79,7 @@ for ss = 1:length(responseSessDirs)
         [preMergeResponseStructCellArray{ss, ii}.values, ...
          preMergeResponseStructCellArray{ss, ii}.timebase, ...
          preMergeResponseStructCellArray{ss, ii}.metaData] = mriBFDM_MakeResponseStruct(makeResponseStructParams);
-        
+        gribble=1;
     end
     fprintf('\n');
 end

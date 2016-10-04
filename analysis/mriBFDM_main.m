@@ -27,12 +27,12 @@ switch packetCacheBehavior
     
     case 'make'  % If we are not to load the packetCellArray, then we must generate it
         
-        % obtain the response structures for all sessions and runs
-        [responseStructCellArray] = mriBFDM_LoadResponseStructCellArray(userName);
-
         % obtain the stimulus structures for all sessions and runs
         [stimStructCellArray] = mriBFDM_LoadStimStructCellArray(userName);
-        
+
+        % obtain the response structures for all sessions and runs
+        [responseStructCellArray] = mriBFDM_LoadResponseStructCellArray(userName);
+     
         % assemble the stimulus and response structures into packets
         [packetCellArray] = mriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray );
         

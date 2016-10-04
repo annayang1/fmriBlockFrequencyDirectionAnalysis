@@ -14,11 +14,11 @@ stimulusSessDirs = {...
     'HCLV_Photo_7T/HERO_gka1/041516' ...
     };
 
-stimulusSessDirs = {'HCLV_Photo_7T/HERO_asb1/041416'};
+%stimulusSessDirs = {'HCLV_Photo_7T/HERO_asb1/041416'};
 
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
-whichSessionsToMerge = {[1]};
+%whichSessionsToMerge = {[1]};
 
 fprintf('>> Creating stimulus structures\n');
 

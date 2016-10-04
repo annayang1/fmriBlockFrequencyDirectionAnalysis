@@ -15,9 +15,9 @@ timebase = (0:TR:(runDur*TR)-TR)*1000;
 
 eccData                      = load_nifti(makeResponseStructParams.eccFile);
 areaData                     = load_nifti(makeResponseStructParams.areasFile);
-areaIndices = find(abs(areaData.vol)==makeResponseStructParams.areasIndex &...
-    eccData.vol>params.eccRange(1) &...
-    eccData.vol<params.eccRange(2));
+areaIndices = find(abs(areaData.vol)==makeResponseStructParams.areaIndex &...
+    eccData.vol>makeResponseStructParams.eccRange(1) &...
+    eccData.vol<makeResponseStructParams.eccRange(2));
 
 volDims                 = size(resp.vol);
 flatVol                 = reshape(resp.vol,volDims(1)*volDims(2)*volDims(3),volDims(4));
@@ -31,10 +31,11 @@ values=regionalSignal;
 
 % Assemble the metaData
 metaData.packetType='bold';
+metaData.centralTendencyMethod='median';
 metaData.responseFile=makeResponseStructParams.responseFile;
 metaData.areasFile=makeResponseStructParams.areasFile;
 metaData.eccFile=makeResponseStructParams.eccFile;
-metaData.areasIndex=makeResponseStructParams.areasIndex;
+metaData.areasIndex=makeResponseStructParams.areaIndex;
 metaData.eccRange=makeResponseStructParams.eccRange;
 metaData.responseUnits='%change';
 metaData.originalTimeSeriesMean=timeSeriesMean;

@@ -104,5 +104,6 @@ metaData.stimulusOrderAorB = tmp(end:end);
 % Get the timing of the attention events and put this in the metaData
 eventTimesArray=mriBFDM_GetAttentionEvents(stimulus.metaData.params);
 metaData.eventTimesArray=eventTimesArray;
-
-
+[hitRate, falseAlarmRate]=mriBFDM_GetAttentionPerformance(stimulus.metaData.params);
+metaData.hitRate=hitRate;
+metaData.falseAlarmRate=falseAlarmRate;
