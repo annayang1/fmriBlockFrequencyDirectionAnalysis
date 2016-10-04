@@ -55,21 +55,23 @@ switch packetCacheBehavior
         error('Please define a legal packetCacheBehavior');
 end
 
+% Remove any packets with attention task hit rate below 60%
+[packetCellArray] = mriBDFM_FilterPacketCellArrayByPerformance(packetCellArray,0.6);
+
 % Derive the HRF from the attention events for each packet, and store it in
 % packetCellArray{}.response.metaData.fourierFitToAttentionEvents.[values,timebase]
-
 [packetCellArray] = mriBDFM_DeriveHRFsForPacketCellArray(packetCellArray);
 
 % Create an average HRF for each subject across all runs
-
 [hrfKernelStructCellArray] = mriBDFN_CreateSubjectAverageHRFs(packetCellArray);
 
 % Plot the average HRF for each subject
-
+figure
 plot(hrfKernelStructCellArray{1}.timebase,hrfKernelStructCellArray{1}.values);
+figure
+plot(hrfKernelStructCellArray{2}.timebase,hrfKernelStructCellArray{2}.values);
 
 % Model and remove the attention events from the responses in each packet
-
 %[packetCellArray] = mriBDFM_RegressAttentionEventsFromPacketCellArray(packetCellArray, hrfKernelStructCellArray);
 
 % Build some arrays to identify the stimulus types in each packet

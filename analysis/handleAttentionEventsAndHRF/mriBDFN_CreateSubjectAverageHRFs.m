@@ -13,6 +13,7 @@ for ss=1:nSubjects
         thePacket=packetCellArray{ss,rr};
         if ~isempty(thePacket)
             hrfArray(counter,:)=thePacket.response.metaData.fourierFitToAttentionEvents.values;
+            currentTimebase=thePacket.response.metaData.fourierFitToAttentionEvents.timebase;
             counter=counter+1;
         end % not an empty packet
     end % loop over runs
@@ -20,7 +21,7 @@ for ss=1:nSubjects
     % Obtain the mean HRF
     meanHRF=mean(hrfArray);
     hrfKernelStructCellArray{ss}.values=meanHRF;
-    hrfKernelStructCellArray{ss}.timebase=thePacket.response.metaData.fourierFitToAttentionEvents.timebase;
+    hrfKernelStructCellArray{ss}.timebase=currentTimebase;
     hrfKernelStructCellArray{ss}.metaData.SEM=std(hrfArray)/sqrt(counter-1);
 
 end % loop over subjects

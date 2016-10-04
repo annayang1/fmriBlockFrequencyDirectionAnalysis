@@ -15,7 +15,7 @@ for ss=1:nSubjects
     for rr=1:nRuns
         thePacket=packetCellArray{ss,rr};
         if ~isempty(thePacket)
-            fprintf('\t* Session <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
+            fprintf('\t* Subject <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
             [ kernelStruct ] = ...
                 mriBFDM_FitFourierBasis(thePacket, msecsToModel, ...
                 numFourierComponents);
