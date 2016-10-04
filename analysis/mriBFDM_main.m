@@ -17,7 +17,7 @@ userName = strtrim(userName);
 %    'make' - load and process stim/response files, save the packets
 %    'load' - load the packets from the passed hash name
 
-packetCacheBehavior='load';
+packetCacheBehavior='make';
 packetCellArrayHash='c9280c61bcc3a366c0f8ddf8eaae29e4';
 dropboxAnalysisDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/mriBlockFrequencyDirectionAnalysis/packetCache');
 
@@ -27,11 +27,11 @@ switch packetCacheBehavior
     
     case 'make'  % If we are not to load the packetCellArray, then we must generate it
         
-        % obtain the stimulus structures for all sessions and runs
-        [stimStructCellArray] = mriBFDM_LoadStimStructCellArray(userName);
-        
         % obtain the response structures for all sessions and runs
         [responseStructCellArray] = mriBFDM_LoadResponseStructCellArray(userName);
+
+        % obtain the stimulus structures for all sessions and runs
+        [stimStructCellArray] = mriBFDM_LoadStimStructCellArray(userName);
         
         % assemble the stimulus and response structures into packets
         [packetCellArray] = mriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray );
@@ -89,7 +89,7 @@ for ss=1:nSubjects
     for ii=1:length(modDirections)
         for jj=1:length(stimOrders)
             theCellIndices=find( (strcmp(modulationDirectionCellArray(ss,:),modDirections{ii})==1) & ...
-                (strcmp(stimulusOrderAorBCellArray(ss,:),stimOrders{jj})==1) )
+                (strcmp(stimulusOrderAorBCellArray(ss,:),stimOrders{jj})==1) );
              [packetCellArray] = ...
                  mriBDFM_FitBTRMModelToPacket(packetCellArray{ss,theCellIndices(1)}, ...
                  hrfKernelStructCellArray);

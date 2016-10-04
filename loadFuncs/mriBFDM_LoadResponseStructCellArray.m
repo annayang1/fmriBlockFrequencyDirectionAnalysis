@@ -4,7 +4,7 @@ function [responseStructCellAray] = mriBFDM_LoadResponseStructCellArray(userName
 %
 
 % Set Cluster path used to load the response data files
-clusterDataDir=fullfile('/Users', userName, 'ccnClusterPseudo/MELA/');
+clusterDataDir=fullfile('/Users', userName, 'ccnCluster/MELA/');
 
 % Define the response file session directories
 responseSessDirs = {...
@@ -14,15 +14,16 @@ responseSessDirs = {...
     'MOUNT_SINAI/HERO_gka1/041516' ...
     };
 
-responseSessDirs = {'MOUNT_SINAI/HERO_asb1/041416'};
+%responseSessDirs = {'MOUNT_SINAI/HERO_asb1/041416'};
 
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
-whichSessionsToMerge = {[1]};
+%whichSessionsToMerge = {[1]};
 
 % Define the name of the response and areas file to load
 responseFileName='wdrf.tf.nii.gz';
 areasFileName='mh.areas.func.vol.nii.gz';
+eccFileName='mh.ecc.func.vol.nii.gz';
 areasIndex=1; % This indexes area V1
 
 fprintf('>> Creating response structures\n');
@@ -50,7 +51,10 @@ for ss = 1:length(responseSessDirs)
         makeResponseStructParams.runNum           = ii;
         makeResponseStructParams.responseFile = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), responseFileName);
         makeResponseStructParams.areasFile    = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), areasFileName);
-
+        makeResponseStructParams.eccFile    = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), eccFileName);        
+        makeResponseStructParams.eccRange = [0 30];
+        makeResponseStructParams.areaIndex = 1;
+        
         % Identify if this is stim order A or B from the runDirectory name
         tmp = strsplit(runDirectoryList{ii},'_');
         makeResponseStructParams.stimulusOrderAorB=tmp{end-1};
@@ -69,7 +73,7 @@ for ss = 1:length(responseSessDirs)
         % Convert the file names from cell arrays to strings
         makeResponseStructParams.responseFile=makeResponseStructParams.responseFile{1};
         makeResponseStructParams.areasFile=makeResponseStructParams.areasFile{1};
-        makeResponseStructParams.areasIndex=1;
+        makeResponseStructParams.eccFile=makeResponseStructParams.eccFile{1};
         
         % Make the response structure
         [preMergeResponseStructCellArray{ss, ii}.values, ...
