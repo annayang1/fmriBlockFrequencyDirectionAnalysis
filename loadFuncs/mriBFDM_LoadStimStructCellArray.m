@@ -60,6 +60,3 @@ for mm = 1:NSessionsMerged
     tempMerge = tempMerge(~cellfun('isempty', tempMerge));
     stimStructCellArray{mm} = tempMerge;
 end
-
-% Remove the outer cell shell
-stimStructCellArray=stimStructCellArray{1};

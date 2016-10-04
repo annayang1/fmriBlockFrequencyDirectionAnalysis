@@ -17,8 +17,8 @@ userName = strtrim(userName);
 %    'make' - load and process stim/response files, save the packets
 %    'load' - load the packets from the passed hash name
 
-packetCacheBehavior='make';
-packetCellArrayHash='c9280c61bcc3a366c0f8ddf8eaae29e4';
+packetCacheBehavior='load';
+packetCellArrayHash='7cf491b9934d56bbfc7793fd25c928a9';
 dropboxAnalysisDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/mriBlockFrequencyDirectionAnalysis/packetCache');
 
 %% Create or load the packetCellArray
@@ -41,7 +41,7 @@ switch packetCacheBehavior
         
         % Set path to the packetCache and save it using the MD5 hash name
         packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayHash '.mat']);
-        save(packetCacheFileName,'packetCellArray');
+        save(packetCacheFileName,'packetCellArray','-v7.3');
         fprintf(['Saved the packetCellArray with hash ID ' packetCellArrayHash '\n']);
         
     case 'load'  % load a cached packetCellArray

@@ -93,5 +93,3 @@ for mm = 1:NSessionsMerged
     responseStructCellAray{mm} = tempMerge;
 end
 
-% Remove the outer cell shell
-responseStructCellAray=responseStructCellAray{1};
