@@ -29,10 +29,10 @@ switch packetCacheBehavior
         
         % obtain the stimulus structures for all sessions and runs
         [stimStructCellArray] = mriBFDM_LoadStimStructCellArray(userName);
-
+        
         % obtain the response structures for all sessions and runs
         [responseStructCellArray] = mriBFDM_LoadResponseStructCellArray(userName);
-     
+        
         % assemble the stimulus and response structures into packets
         [packetCellArray] = mriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray );
         
@@ -72,15 +72,17 @@ figure
 plot(hrfKernelStructCellArray{2}.timebase,hrfKernelStructCellArray{2}.values);
 
 % Model and remove the attention events from the responses in each packet
-%[packetCellArray] = mriBDFM_RegressAttentionEventsFromPacketCellArray(packetCellArray, hrfKernelStructCellArray);
+[packetCellArray] = mriBDFM_RegressAttentionEventsFromPacketCellArray(packetCellArray, hrfKernelStructCellArray);
 
 % Build some arrays to identify the stimulus types in each packet
 nSubjects=size(packetCellArray,1);
 nRuns=size(packetCellArray,2);
 for ss=1:nSubjects
     for rr=1:nRuns
+        if ~isempty(packetCellArray{ss,rr})
         modulationDirectionCellArray{ss,rr}=(packetCellArray{ss,rr}.stimulus.metaData.modulationDirection);
         stimulusOrderAorBCellArray{ss,rr}=(packetCellArray{ss,rr}.stimulus.metaData.stimulusOrderAorB);
+        end % the packet is not empty
     end % loop over runs
 end % loop over subjects
 
@@ -92,9 +94,12 @@ for ss=1:nSubjects
         for jj=1:length(stimOrders)
             theCellIndices=find( (strcmp(modulationDirectionCellArray(ss,:),modDirections{ii})==1) & ...
                 (strcmp(stimulusOrderAorBCellArray(ss,:),stimOrders{jj})==1) );
-             [packetCellArray] = ...
-                 mriBDFM_FitBTRMModelToPacket(packetCellArray{ss,theCellIndices(1)}, ...
-                 hrfKernelStructCellArray);
+            tempPacket=packetCellArray{ss,theCellIndices(1)};
+            for kk=2:length(theCellIndices)
+                tempPacket.response.values=packetCellArray{ss,theCellIndices(2)}.response.values;
+            end % loop over cell indicies
+            tempPacket.response.values=tempPacket.response.values/length(theCellIndices);
+            mriBDFM_FitBTRMModelToPacket(tempPacket, hrfKernelStructCellArray{ss});
         end % loop over modulation directions
     end % loop over stimulus orders
 end % loop over subjects
