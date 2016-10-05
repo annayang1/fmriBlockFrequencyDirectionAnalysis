@@ -82,4 +82,4 @@ end
 
 % Fit the IAMP model to the average responses for each subject, modulation
 % direction, and stimulus order
-mriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
+[fitResultsStructAvgResponseCellArray] = mriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
