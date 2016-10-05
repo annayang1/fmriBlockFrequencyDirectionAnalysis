@@ -6,8 +6,10 @@ nDirections=size(fitResultsStructAvgResponseCellArray,2);
 nOrders=size(fitResultsStructAvgResponseCellArray,3);
 
 modDirections={'LightFlux','L-M','S'};
+colorStr = 'krb';
 stimOrders={'A','B'};
 theFrequencies=[0,2,4,8,16,32,64];
+
 
 fprintf('>> Generating TTF plots\n');
 
@@ -24,8 +26,14 @@ for ss=1:nSubjects
             meanAmplitudeByFreq(ff)=mean(theAmplitudes);
             semAmplitudeByFreq(ff)=std(theAmplitudes)/sqrt(length(theAmplitudes));
         end % loop through frequencies
+            [~, ~, frequenciesHz_fine,y,offset] = ...
+                fitWatsonToTTF_errorGuided(theFrequencies,meanAmplitudeByFreq,semAmplitudeByFreq,0);
+            
         subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
-        plot(meanAmplitudeByFreq);
+        plot(frequenciesHz_fine,y+offset,[colorStr(ii) '-']); hold on
+        errorbar(theFrequencies,meanAmplitudeByFreq,semAmplitudeByFreq,[colorStr(ii) 'o']); set(gca,'FontSize',10);
+set(gca,'Xtick',theFrequencies); title(modDirections{ii}); axis square;
+       set(gca,'Xscale','log'); xlabel('Frequency [Hz]'); ylabel('% change');
     end % loop over modulation directions
 end % loop over subjects
 gribble=1;
