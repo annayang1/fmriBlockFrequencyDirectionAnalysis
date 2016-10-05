@@ -1,21 +1,26 @@
 function []=mriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray)
 
-% Build some arrays to identify the stimulus types in each packet
+% Get the dimensions of the passed cell array
 nSubjects=size(fitResultsStructAvgResponseCellArray,1);
 nDirections=size(fitResultsStructAvgResponseCellArray,2);
 nOrders=size(fitResultsStructAvgResponseCellArray,3);
 
+% Define these constants. Probably should have the first three pulled from
+% the passed cell array
 modDirections={'LightFlux','L-M','S'};
-colorStr = 'krb';
 stimOrders={'A','B'};
 theFrequencies=[0,2,4,8,16,32,64];
+colorStr = 'krb';
 
-
+% alert the user
 fprintf('>> Generating TTF plots\n');
 
 figure
 for ss=1:nSubjects
     for ii=1:nDirections
+
+        % Loop over the frequencies (and across the stimulus orders within
+        % frequencies
         for ff=1:length(theFrequencies)
             theAmplitudes=[];
             for jj=1:nOrders
@@ -26,14 +31,28 @@ for ss=1:nSubjects
             meanAmplitudeByFreq(ff)=mean(theAmplitudes);
             semAmplitudeByFreq(ff)=std(theAmplitudes)/sqrt(length(theAmplitudes));
         end % loop through frequencies
-            [~, ~, frequenciesHz_fine,y,offset] = ...
-                fitWatsonToTTF_errorGuided(theFrequencies,meanAmplitudeByFreq,semAmplitudeByFreq,0);
-            
+        
+        % Adjust the data to have the zero frequency response
+        % correspond to zero percent signal change
+        zeroFrequencyValue=meanAmplitudeByFreq(1);
+        meanAmplitudeByFreq=meanAmplitudeByFreq-zeroFrequencyValue;
+        
+        % Fit the Watson model to the data, leaving out the 0th frequency
+        [~, ~, frequenciesHz_fine,y,offset] = ...
+            fitWatsonToTTF_errorGuided(theFrequencies(2:7),meanAmplitudeByFreq(2:7),semAmplitudeByFreq(2:7),0);
+        
+        % Plot this subject / direction
         subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
-        plot(frequenciesHz_fine,y+offset,[colorStr(ii) '-']); hold on
-        errorbar(theFrequencies,meanAmplitudeByFreq,semAmplitudeByFreq,[colorStr(ii) 'o']); set(gca,'FontSize',10);
-set(gca,'Xtick',theFrequencies); title(modDirections{ii}); axis square;
-       set(gca,'Xscale','log'); xlabel('Frequency [Hz]'); ylabel('% change');
+        plot(frequenciesHz_fine,y+offset,[colorStr(ii) '-']);
+        hold on
+        errorbar(theFrequencies(2:7),meanAmplitudeByFreq(2:7),semAmplitudeByFreq(2:7),[colorStr(ii) 'o']);
+        set(gca,'FontSize',10); set(gca,'Xtick',theFrequencies); title(modDirections{ii}); axis square;
+        set(gca,'Xscale','log'); xlabel('Frequency [Hz]'); ylabel('% change from 0 Hz condition');
+        
+        % Add bars to indicate the ±SEM boundary of the 0 Hz condition        
+        plot(get(gca,'xlim'), [0 0], '--k'); % Adapts to x limits of current axes
+        plot(get(gca,'xlim'), [semAmplitudeByFreq(1) semAmplitudeByFreq(1)], 'color',[0.5 0.5 0.5]); % Adapts to x limits of current axes
+        plot(get(gca,'xlim'), [-semAmplitudeByFreq(1) -semAmplitudeByFreq(1)], 'color',[0.5 0.5 0.5]); % Adapts to x limits of current axes
+        
     end % loop over modulation directions
 end % loop over subjects
-gribble=1;
