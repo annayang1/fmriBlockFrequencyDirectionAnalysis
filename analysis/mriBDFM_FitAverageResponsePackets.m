@@ -39,8 +39,10 @@ for ss=1:nSubjects
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.rSquared=rSquared;
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.modelResponseStruct=modelResponseStruct;
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.responseStruct=tempPacket.response;
+            fitResultsStructAvgResponseCellArray{ss,ii,jj}.stimTypes=tempPacket.stimulus.metaData.stimTypes;
+            fitResultsStructAvgResponseCellArray{ss,ii,jj}.stimLabels=tempPacket.stimulus.metaData.stimLabels;            
             subplot(length(modDirections),length(stimOrders),jj+(ii-1)*length(stimOrders));
-            plotModelFit(tempPacket.stimulus,tempPacket.response,modelResponseStruct)
+            mriBDFM_PlotTimeSeriesFits(tempPacket.stimulus,tempPacket.response,modelResponseStruct)
             title([modDirections{ii} ' order ' stimOrders{jj}]);
         end % loop over modulation directions
     end % loop over stimulus orders

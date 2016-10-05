@@ -16,7 +16,7 @@ for ss=1:nSubjects
     for ii=1:nDirections
         for ff=1:length(theFrequencies)
             theAmplitudes=[];
-            for jj=1:nOrders
+            for jj=1:length(stimOrders)
                 stimTypes=fitResultsStructAvgResponseCellArray{ss,ii,jj}.stimTypes;
                 theIndices=find(stimTypes==ff);
                 theAmplitudes=[theAmplitudes fitResultsStructAvgResponseCellArray{ss,ii,jj}.paramsFit.paramMainMatrix(theIndices)'];

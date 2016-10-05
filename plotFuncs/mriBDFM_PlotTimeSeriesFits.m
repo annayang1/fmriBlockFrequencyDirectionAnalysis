@@ -1,4 +1,4 @@
-function []=plotModelFit(stimulusStruct,responseStruct,modelResponseStruct)
+function []=mriBDFM_PlotTimeSeriesFits(stimulusStruct,responseStruct,modelResponseStruct)
 
 % function plotLinModelFits(timeSamples,timeSeriesAvgAct,timeSeriesAvgModel,startTimes,stimValuesCell,stimValuesMat,timeSeriesStd)
 %
