@@ -9,20 +9,28 @@
 clearvars; close all; clc;
 warning on;
 
-% Discover user name
+% Discover user name and find the Dropbox directory
 [~, userName] = system('whoami');
 userName = strtrim(userName);
+dropboxAnalysisDir = ...
+    fullfile('/Users', userName, ...
+    '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/mriBlockFrequencyDirectionAnalysis/packetCache');
 
 % Define packetCacheBehavior. Options include:
 %    'make' - load and process stim/response files, save the packets
 %    'load' - load the packets from the passed hash name
-
 packetCacheBehavior='load';
+packetCellArrayTag='V1_0-30degrees';
 packetCellArrayHash='7cf491b9934d56bbfc7793fd25c928a9';
-dropboxAnalysisDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/mriBlockFrequencyDirectionAnalysis/packetCache');
+
+% Define resultCacheBehavior. Options include:
+%    'make' - load and process stim/response files, save the packets
+%    'load' - load the packets from the passed hash name
+resultCacheBehavior='make';
+resultCellArrayTag='V1_0-30degrees';
+resultCellArrayHash='';
 
 %% Create or load the packetCellArray
-
 switch packetCacheBehavior
     
     case 'make'  % If we are not to load the packetCellArray, then we must generate it
@@ -40,14 +48,14 @@ switch packetCacheBehavior
         packetCellArrayHash = DataHash(packetCellArray);
         
         % Set path to the packetCache and save it using the MD5 hash name
-        packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayHash '.mat']);
+        packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayTag '_' packetCellArrayHash '.mat']);
         save(packetCacheFileName,'packetCellArray','-v7.3');
         fprintf(['Saved the packetCellArray with hash ID ' packetCellArrayHash '\n']);
         
     case 'load'  % load a cached packetCellArray
         
         fprintf('>> Loading cached packetCellArray\n');
-        packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayHash '.mat']);
+        packetCacheFileName=fullfile(dropboxAnalysisDir, [packetCellArrayTag '_' packetCellArrayHash '.mat']);
         load(packetCacheFileName);
         
     otherwise
@@ -65,42 +73,10 @@ end
 % Create an average HRF for each subject across all runs
 [hrfKernelStructCellArray] = mriBDFN_CreateSubjectAverageHRFs(packetCellArray);
 
-% Plot the average HRF for each subject
-figure
-plot(hrfKernelStructCellArray{1}.timebase,hrfKernelStructCellArray{1}.values);
-figure
-plot(hrfKernelStructCellArray{2}.timebase,hrfKernelStructCellArray{2}.values);
-
 % Model and remove the attention events from the responses in each packet
 [packetCellArray] = mriBDFM_RegressAttentionEventsFromPacketCellArray(packetCellArray, hrfKernelStructCellArray);
 
-% Build some arrays to identify the stimulus types in each packet
-nSubjects=size(packetCellArray,1);
-nRuns=size(packetCellArray,2);
-for ss=1:nSubjects
-    for rr=1:nRuns
-        if ~isempty(packetCellArray{ss,rr})
-        modulationDirectionCellArray{ss,rr}=(packetCellArray{ss,rr}.stimulus.metaData.modulationDirection);
-        stimulusOrderAorBCellArray{ss,rr}=(packetCellArray{ss,rr}.stimulus.metaData.stimulusOrderAorB);
-        end % the packet is not empty
-    end % loop over runs
-end % loop over subjects
-
-modDirections={'LightFlux','L-M','S'};
-stimOrders={'A','B'};
-
-for ss=1:nSubjects
-    for ii=1:length(modDirections)
-        for jj=1:length(stimOrders)
-            theCellIndices=find( (strcmp(modulationDirectionCellArray(ss,:),modDirections{ii})==1) & ...
-                (strcmp(stimulusOrderAorBCellArray(ss,:),stimOrders{jj})==1) );
-            tempPacket=packetCellArray{ss,theCellIndices(1)};
-            for kk=2:length(theCellIndices)
-                tempPacket.response.values=packetCellArray{ss,theCellIndices(2)}.response.values;
-            end % loop over cell indicies
-            tempPacket.response.values=tempPacket.response.values/length(theCellIndices);
-            mriBDFM_FitBTRMModelToPacket(tempPacket, hrfKernelStructCellArray{ss});
-        end % loop over modulation directions
-    end % loop over stimulus orders
-end % loop over subjects
+% Fit the IAMP model to the average responses for each subject, modulation
+% direction, and stimulus order
+[fitResultsStructAvgResponseCellArray] = mriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
 

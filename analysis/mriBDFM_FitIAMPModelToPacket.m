@@ -1,9 +1,9 @@
-function [paramsFit,rSquared,modelResponseStruct] = mriBDFM_FitBTRMModelToPacket(thePacket, hrfKernelStruct)
+function [paramsFit,rSquared,modelResponseStruct] = mriIAMP_FitBTRMModelToPacket(thePacket, hrfKernelStruct)
 % function [packetCellArray] = mriBDFM_FitModelToPacketCellArray(thePacket, hrfKernelStructCellArray)
 %
 
 % Construct the model object
-temporalFit = tfeBTRM('verbosity','none');
+temporalFit = tfeIAMP('verbosity','none');
 
 % grab the average hrf and prepare it as a kernel
 check = diff(thePacket.response.timebase);
@@ -13,7 +13,7 @@ newKernelTimebase = hrfKernelStruct.timebase(1):responseDeltaT:(hrfKernelStruct.
 hrfKernelStruct = temporalFit.resampleTimebase(hrfKernelStruct,newKernelTimebase);
 thePacket.kernel=prepareHRFKernel(hrfKernelStruct);
 
-% downsample the stimulus values to 100 ms deltaT
+% downsample the stimulus values to 100 ms deltaT to speed things up
 totalResponseDuration=thePacket.response.metaData.TRmsecs * ...
     length(thePacket.response.values);
 newStimulusTimebase=linspace(0,totalResponseDuration-100,totalResponseDuration/100);
@@ -30,6 +30,7 @@ paramLockMatrix=[];
     temporalFit.fitResponse(thePacket,...
     'defaultParamsInfo', defaultParamsInfo, ...
     'paramLockMatrix',paramLockMatrix, ...
+    'searchMethod','linearRegression', ...
     'errorType','1-r2');
 
 rSquared=1-FVal;
