@@ -1,4 +1,4 @@
-function []=mriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray)
+function []=fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray)
 
 % Get the dimensions of the passed cell array
 nSubjects=size(fitResultsStructAvgResponseCellArray,1);

@@ -1,5 +1,5 @@
-function [kernelStruct] = mriBFDM_FitFourierBasis( thePacket, msecsToModel, numFourierComponents )
-% function [kernelStruct] = mriBFDM_FitFourierBasis( thePacket, msecsToModel, frequenciesToModel )
+function [kernelStruct] = fmriBFDM_FitFourierBasis( thePacket, msecsToModel, numFourierComponents )
+% function [kernelStruct] = fmriBFDM_FitFourierBasis( thePacket, msecsToModel, frequenciesToModel )
 %
 % Fits a Fourier basis set to the attention events specified in thePacket,
 % and returns a kernelStruct that has an estimate of the average evoked

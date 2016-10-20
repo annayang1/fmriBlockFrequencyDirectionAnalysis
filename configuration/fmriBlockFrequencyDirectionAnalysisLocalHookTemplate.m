@@ -1,10 +1,10 @@
-function mriBlockFrequencyDirectionAnalysisLocalHookTemplate
-% mriBlockFrequencyDirectionAnalysisLocalHookTemplate
+function fmriBlockFrequencyDirectionAnalysisLocalHookTemplate
+% fmriBlockFrequencyDirectionAnalysisLocalHookTemplate
 %
 % For use with the ToolboxToolbox.  If you copy this into your
 % ToolboxToolbox localToolboxHooks directory (by defalut,
 % ~/localToolboxHooks) and delete "LocalHooksTemplate" from the filename,
-% this will get run when you execute tbUse({'mriBlockFrequencyDirectionAnalysis'}) to set up for
+% this will get run when you execute tbUse({'fmriBlockFrequencyDirectionAnalysis'}) to set up for
 % this project.  You then edit your local copy to match your local machine.
 %
 % The thing that this does is add subfolders of the project to the path as
@@ -15,7 +15,7 @@ function mriBlockFrequencyDirectionAnalysisLocalHookTemplate
 % to match what is true on your computer.
 
 %% Say hello
-fprintf('Running mriBlockFrequencyDirectionAnalysis local hook\n');
+fprintf('Running fmriBlockFrequencyDirectionAnalysis local hook\n');
 
 %% Set preferences
 
@@ -34,7 +34,7 @@ switch userID
         dataPath = ['/Users/' userID '/Dropbox (Aguirre-Brainard Lab)/MELA_data/'];
 end
 
-addpath(genpath(['/Users/' userID '/Documents/MATLAB/Analysis/mriBlockFrequencyDirectionAnalysis']));
+addpath(genpath(['/Users/' userID '/Documents/MATLAB/Analysis/fmriBlockFrequencyDirectionAnalysis']));
 
 % Mount the cluster
 %  use sshfs to mount the cluster to a defined mount point.

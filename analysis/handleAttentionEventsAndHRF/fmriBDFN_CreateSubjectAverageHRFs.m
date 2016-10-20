@@ -1,5 +1,5 @@
-function [hrfKernelStructCellArray] = mriBDFN_CreateSubjectAverageHRFs(packetCellArray)
-%function [hrfKernelStructCellArray] = mriBDFN_CreateSubjectAverageHRFs(packetCellArray)
+function [hrfKernelStructCellArray] = fmriBDFN_CreateSubjectAverageHRFs(packetCellArray)
+%function [hrfKernelStructCellArray] = fmriBDFN_CreateSubjectAverageHRFs(packetCellArray)
 %
 % Create an average HRF for each subject across all runs
 

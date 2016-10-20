@@ -1,5 +1,5 @@
-function [stimStructCellArray] = mriBFDM_LoadStimStructCellArray(userName)
-% function [stimStructCellAray] = mriBFDM_LoadStimStructCellArray()
+function [stimStructCellArray] = fmriBFDM_LoadStimStructCellArray(userName)
+% function [stimStructCellAray] = fmriBFDM_LoadStimStructCellArray()
 %
 %
 
@@ -47,7 +47,7 @@ for ss = 1:length(stimulusSessDirs)
         % Make the stimulus structure
         [preMergeStimStructCellArray{ss, ii}.values, ...
          preMergeStimStructCellArray{ss, ii}.timebase, ...
-         preMergeStimStructCellArray{ss, ii}.metaData] = mriBFDM_MakeStimStruct(makeStimStructParams);
+         preMergeStimStructCellArray{ss, ii}.metaData] = fmriBFDM_MakeStimStruct(makeStimStructParams);
     end
     fprintf('\n');
 end

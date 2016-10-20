@@ -1,5 +1,5 @@
-function [values,timebase,metaData] = mriBFDM_MakeResponseStruct(makeResponseStructParams)
-% function [values,timebase,metaData] = mriBFDM_MakeResponseStruct(makeResponseStructParams)
+function [values,timebase,metaData] = fmriBFDM_MakeResponseStruct(makeResponseStructParams)
+% function [values,timebase,metaData] = fmriBFDM_MakeResponseStruct(makeResponseStructParams)
 %
 %
 

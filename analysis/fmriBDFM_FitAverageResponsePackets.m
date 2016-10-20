@@ -1,5 +1,5 @@
-function [fitResultsStructAvgResponseCellArray] = mriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray)
-% function [packetCellArray] = mriBDFM_FitModelToPacketCellArray(thePacket, hrfKernelStructCellArray)
+function [fitResultsStructAvgResponseCellArray] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray)
+% function [packetCellArray] = fmriBDFM_FitModelToPacketCellArray(thePacket, hrfKernelStructCellArray)
 %
 
 % Build some arrays to identify the stimulus types in each packet
@@ -34,7 +34,7 @@ for ss=1:nSubjects
             
             tempPacket.response.values=mean(responseArray);
             tempPacket.response.sem=std(responseArray)/sqrt(length(theCellIndices));            
-            [paramsFit,rSquared,modelResponseStruct]=mriBDFM_FitIAMPModelToPacket(tempPacket, hrfKernelStructCellArray{ss});
+            [paramsFit,rSquared,modelResponseStruct]=fmriBDFM_FitIAMPModelToPacket(tempPacket, hrfKernelStructCellArray{ss});
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.paramsFit=paramsFit;
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.rSquared=rSquared;
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.modelResponseStruct=modelResponseStruct;
@@ -42,7 +42,7 @@ for ss=1:nSubjects
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.stimTypes=tempPacket.stimulus.metaData.stimTypes;
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.stimLabels=tempPacket.stimulus.metaData.stimLabels;            
             subplot(length(modDirections),length(stimOrders),jj+(ii-1)*length(stimOrders));
-            mriBDFM_PlotTimeSeriesFits(tempPacket.stimulus,tempPacket.response,modelResponseStruct)
+            fmriBDFM_PlotTimeSeriesFits(tempPacket.stimulus,tempPacket.response,modelResponseStruct)
             title([modDirections{ii} ' order ' stimOrders{jj}]);
         end % loop over modulation directions
     end % loop over stimulus orders

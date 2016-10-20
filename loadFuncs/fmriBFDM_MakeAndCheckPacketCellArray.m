@@ -1,5 +1,5 @@
-function [ packetCellArray ] = mriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray )
-% function [ packetCellArray ] = mriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray )
+function [ packetCellArray ] = fmriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray )
+% function [ packetCellArray ] = fmriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray )
 %
 % Receives the stimulus and response structs and assembles them into
 % packets

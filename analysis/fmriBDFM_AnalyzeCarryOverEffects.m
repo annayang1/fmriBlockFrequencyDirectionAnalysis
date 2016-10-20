@@ -1,4 +1,5 @@
-function [  ] = mriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
+function [  ] = fmriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
+% function [  ] = fmriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
 
 % Get the dimensions of the passed cell array
 nSubjects=size(fitResultsStructAvgResponseCellArray,1);

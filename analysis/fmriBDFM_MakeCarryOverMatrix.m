@@ -1,6 +1,6 @@
-function [ theResponseMatrix ] = mriBDFM_MakeCarryOverMatrix( fitResultsStructAvgResponseCellArray )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function [ theResponseMatrix ] = fmriBDFM_MakeCarryOverMatrix( fitResultsStructAvgResponseCellArray )
+% function [ theResponseMatrix ] = fmriBDFM_MakeCarryOverMatrix( fitResultsStructAvgResponseCellArray )
+%
 
 nResultsStuctures=length(fitResultsStructAvgResponseCellArray);
 

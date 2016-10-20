@@ -1,5 +1,5 @@
-function [responseStructCellAray] = mriBFDM_LoadResponseStructCellArray(userName)
-% function [responseStructCellAray] = mriBFDM_LoadResponseStructCellArray(userName)
+function [responseStructCellAray] = fmriBFDM_LoadResponseStructCellArray(userName)
+% function [responseStructCellAray] = fmriBFDM_LoadResponseStructCellArray(userName)
 %
 %
 
@@ -78,7 +78,7 @@ for ss = 1:length(responseSessDirs)
         % Make the response structure
         [preMergeResponseStructCellArray{ss, ii}.values, ...
          preMergeResponseStructCellArray{ss, ii}.timebase, ...
-         preMergeResponseStructCellArray{ss, ii}.metaData] = mriBFDM_MakeResponseStruct(makeResponseStructParams);
+         preMergeResponseStructCellArray{ss, ii}.metaData] = fmriBFDM_MakeResponseStruct(makeResponseStructParams);
         gribble=1;
     end
     fprintf('\n');

@@ -1,5 +1,5 @@
-function [paramsFit,rSquared,modelResponseStruct] = mriIAMP_FitBTRMModelToPacket(thePacket, hrfKernelStruct)
-% function [packetCellArray] = mriBDFM_FitModelToPacketCellArray(thePacket, hrfKernelStructCellArray)
+function [paramsFit,rSquared,modelResponseStruct] = fmriIAMP_FitBTRMModelToPacket(thePacket, hrfKernelStruct)
+% function [packetCellArray] = fmriBDFM_FitModelToPacketCellArray(thePacket, hrfKernelStructCellArray)
 %
 
 % Construct the model object

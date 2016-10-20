@@ -1,4 +1,4 @@
-% mriBlockFrequencyDirectionAnalysis.
+% fmriBlockFrequencyDirectionAnalysis.
 %
 % Code to analyze data collected at Mount Sinai using 12-second blocked
 %  stimulus presentations of uniform field flicker between 2 and 64 Hz,
@@ -14,7 +14,7 @@ warning on;
 userName = strtrim(userName);
 dropboxAnalysisDir = ...
     fullfile('/Users', userName, ...
-    '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/mriBlockFrequencyDirectionAnalysis/packetCache');
+    '/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/fmriBlockFrequencyDirectionAnalysis/packetCache');
 
 % Define packetCacheBehavior. Options include:
 %    'make' - load and process stim/response files, save the packets
@@ -36,13 +36,13 @@ switch packetCacheBehavior
     case 'make'  % If we are not to load the packetCellArray, then we must generate it
         
         % obtain the stimulus structures for all sessions and runs
-        [stimStructCellArray] = mriBFDM_LoadStimStructCellArray(userName);
+        [stimStructCellArray] = fmriBFDM_LoadStimStructCellArray(userName);
         
         % obtain the response structures for all sessions and runs
-        [responseStructCellArray] = mriBFDM_LoadResponseStructCellArray(userName);
+        [responseStructCellArray] = fmriBFDM_LoadResponseStructCellArray(userName);
         
         % assemble the stimulus and response structures into packets
-        [packetCellArray] = mriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray );
+        [packetCellArray] = fmriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray );
         
         % calculate the hex MD5 hash for the packetCellArray
         packetCellArrayHash = DataHash(packetCellArray);
@@ -64,24 +64,24 @@ switch packetCacheBehavior
 end
 
 % Remove any packets with attention task hit rate below 60%
-[packetCellArray] = mriBDFM_FilterPacketCellArrayByPerformance(packetCellArray,0.6);
+[packetCellArray] = fmriBDFM_FilterPacketCellArrayByPerformance(packetCellArray,0.6);
 
 % Derive the HRF from the attention events for each packet, and store it in
 % packetCellArray{}.response.metaData.fourierFitToAttentionEvents.[values,timebase]
-[packetCellArray] = mriBDFM_DeriveHRFsForPacketCellArray(packetCellArray);
+[packetCellArray] = fmriBDFM_DeriveHRFsForPacketCellArray(packetCellArray);
 
 % Create an average HRF for each subject across all runs
-[hrfKernelStructCellArray] = mriBDFN_CreateSubjectAverageHRFs(packetCellArray);
+[hrfKernelStructCellArray] = fmriBDFN_CreateSubjectAverageHRFs(packetCellArray);
 
 % Model and remove the attention events from the responses in each packet
-[packetCellArray] = mriBDFM_RegressAttentionEventsFromPacketCellArray(packetCellArray, hrfKernelStructCellArray);
+[packetCellArray] = fmriBDFM_RegressAttentionEventsFromPacketCellArray(packetCellArray, hrfKernelStructCellArray);
 
 % Fit the IAMP model to the average responses for each subject, modulation
 % direction, and stimulus order
-[fitResultsStructAvgResponseCellArray] = mriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
+[fitResultsStructAvgResponseCellArray] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
 
 % Plot the TTFs
-mriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
+fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
 
 % Plot the carry-over matrices
-mriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
+fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);

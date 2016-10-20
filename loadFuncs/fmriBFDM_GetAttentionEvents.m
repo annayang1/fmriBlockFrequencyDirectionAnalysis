@@ -1,5 +1,5 @@
-function eventTimesArray = mriBFDM_GetAttentionEvents(params)
-% function eventTimesArray = mriBFDM_GetAttentionEvents(params)
+function eventTimesArray = fmriBFDM_GetAttentionEvents(params)
+% function eventTimesArray = fmriBFDM_GetAttentionEvents(params)
 %
 % Returns an array of attention events for a given run
 %

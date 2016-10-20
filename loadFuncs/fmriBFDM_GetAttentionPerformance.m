@@ -1,5 +1,5 @@
-function [hitRate, falseAlarmRate] = mriBFDM_GetAttentionPerformance(params)
-% function eventTimesArray = mriBFDM_GetAttentionEvents(params)
+function [hitRate, falseAlarmRate] = fmriBFDM_GetAttentionPerformance(params)
+% function eventTimesArray = fmriBFDM_GetAttentionEvents(params)
 %
 % Returns performance on attention trials
 %

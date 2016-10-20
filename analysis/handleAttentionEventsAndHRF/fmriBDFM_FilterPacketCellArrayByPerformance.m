@@ -1,5 +1,5 @@
-function [packetCellArray] = mriBDFM_FilterPacketCellArrayByPerformance(packetCellArray, threshold)
-% function [packetCellArray] = mriBDFM_FilterPacketCellArrayByPerformance(packetCellArray, threshold)
+function [packetCellArray] = fmriBDFM_FilterPacketCellArrayByPerformance(packetCellArray, threshold)
+% function [packetCellArray] = fmriBDFM_FilterPacketCellArrayByPerformance(packetCellArray, threshold)
 %
 % Remove packets with below-threshold performance
 

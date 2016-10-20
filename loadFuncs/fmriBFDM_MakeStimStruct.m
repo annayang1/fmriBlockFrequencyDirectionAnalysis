@@ -1,5 +1,5 @@
-function [values,timebase,metaData] = mriBFDM_MakeStimStruct(makeStimStructParams)
-% function [values,timebase,metaData] = mriBFDM_MakeStimStruct(makeStimStructParams)
+function [values,timebase,metaData] = fmriBFDM_MakeStimStruct(makeStimStructParams)
+% function [values,timebase,metaData] = fmriBFDM_MakeStimStruct(makeStimStructParams)
 %
 %
 
@@ -102,8 +102,8 @@ tmp=stimulus.metaData.exp.protocolList(stimulus.metaData.exp.protocolIndex).name
 metaData.stimulusOrderAorB = tmp(end:end);
 
 % Get the timing of the attention events and put this in the metaData
-eventTimesArray=mriBFDM_GetAttentionEvents(stimulus.metaData.params);
+eventTimesArray=fmriBFDM_GetAttentionEvents(stimulus.metaData.params);
 metaData.eventTimesArray=eventTimesArray;
-[hitRate, falseAlarmRate]=mriBFDM_GetAttentionPerformance(stimulus.metaData.params);
+[hitRate, falseAlarmRate]=fmriBFDM_GetAttentionPerformance(stimulus.metaData.params);
 metaData.hitRate=hitRate;
 metaData.falseAlarmRate=falseAlarmRate;
