@@ -110,7 +110,7 @@ for ss=1:nSubjects
         nPartitions=size(partitionMatrix,1);
         
         % Conduct the cross validation
-        [ xValFitStructure ] = crossValidateFits( subPacketCellArray, tfeHandle, ...
+        [ xValFitStructure, averageResponseStruct, modelResponseStruct ] = crossValidateFits( subPacketCellArray, tfeHandle, ...
             'partitionMatrix', partitionMatrix, ...
             'aggregateMethod', 'mean',...
             'verbosity', 'none',...
@@ -118,6 +118,10 @@ for ss=1:nSubjects
             'errorType', '1-r2');
         
         xValFitStructureCellArray{ss,ii}=xValFitStructure;
+        
+        % Plot the fit to the data
+        
+        
         
     end % loop over modulation directions
 end % loop over subjects
