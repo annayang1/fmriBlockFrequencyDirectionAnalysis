@@ -1,6 +1,17 @@
-function [ xValFitStructureCellArray ] = fmriBDFM_CalculateCrossValFits(packetCellArray, hrfKernelStructCellArray)
+function [ xValFitStructureCellArray ] = fmriBDFM_CalculateCrossValFits(packetCellArray, hrfKernelStructCellArray, varargin)
 % function [packetCellArray] = fmriBDFM_CalculateCrossValFits(thePacket, hrfKernelStructCellArray)
 %
+
+%% Parse vargin for options passed here
+%
+% Setting 'KeepUmatched' to true means that we can pass the varargin{:})
+% along from a calling routine without an error here, if the key/value
+% pairs recognized by the calling routine are not needed here.
+p = inputParser; p.KeepUnmatched = true;
+p.addRequired('packetCellArray',@iscell);
+p.addRequired('hrfKernelStructCellArray',@iscell);
+p.addParameter('carryCovars',false,@islogical);
+p.parse(packetCellArray,hrfKernelStructCellArray,varargin{:});
 
 % Announce our intentions
 fprintf('>> Calculating cross-validated parameters\n');
@@ -54,31 +65,33 @@ for ss=1:nSubjects
             thePacket.stimulus=tfeHandle.resampleTimebase(thePacket.stimulus,newStimulusTimebase);
             
             % create carry-over stimLabels and stimTypes
-            if ischar(thePacket.stimulus.metaData.stimLabels{1})
-                uniqueStimLabels=unique(thePacket.stimulus.metaData.stimLabels);
-            end
-            if isnumeric(thePacket.stimulus.metaData.stimLabels{1})
-                uniqueStimLabels=unique(cell2mat(thePacket.stimulus.metaData.stimLabels));
-                uniqueStimLabels=cellfun(@num2str, num2cell(uniqueStimLabels), 'UniformOutput', false);
-            end
-            newStimLabels=cell(1);
-            labelCounter=1;
-            for uu=1:length(uniqueStimLabels) % prior stimulus
-                for vv=1:length(uniqueStimLabels) % current stimulus
-                    newStimLabels{labelCounter}=[uniqueStimLabels{uu} '_x_' uniqueStimLabels{vv}];
-                    labelCounter=labelCounter+1;
+            if p.Results.carryCovars
+                if ischar(thePacket.stimulus.metaData.stimLabels{1})
+                    uniqueStimLabels=unique(thePacket.stimulus.metaData.stimLabels);
                 end
-            end
-            stimTypes=thePacket.stimulus.metaData.stimTypes;
-            priorStimLabel=uniqueStimLabels{1};
-            for ii=1:length(stimTypes)
-                currentStimLabel=uniqueStimLabels{stimTypes(ii)};
-                carryOverLabel=[priorStimLabel '_x_' currentStimLabel];
-                newStimTypes(ii)=find(strcmp(newStimLabels,carryOverLabel));
-                priorStimLabel=currentStimLabel;
-            end
-            thePacket.stimulus.metaData.stimLabels=newStimLabels;
-            thePacket.stimulus.metaData.stimTypes=newStimTypes';
+                if isnumeric(thePacket.stimulus.metaData.stimLabels{1})
+                    uniqueStimLabels=unique(cell2mat(thePacket.stimulus.metaData.stimLabels));
+                    uniqueStimLabels=cellfun(@num2str, num2cell(uniqueStimLabels), 'UniformOutput', false);
+                end
+                newStimLabels=cell(1);
+                labelCounter=1;
+                for uu=1:length(uniqueStimLabels) % prior stimulus
+                    for vv=1:length(uniqueStimLabels) % current stimulus
+                        newStimLabels{labelCounter}=[uniqueStimLabels{uu} '_x_' uniqueStimLabels{vv}];
+                        labelCounter=labelCounter+1;
+                    end
+                end
+                stimTypes=thePacket.stimulus.metaData.stimTypes;
+                priorStimLabel=uniqueStimLabels{1};
+                for ii=1:length(stimTypes)
+                    currentStimLabel=uniqueStimLabels{stimTypes(ii)};
+                    carryOverLabel=[priorStimLabel '_x_' currentStimLabel];
+                    newStimTypes(ii)=find(strcmp(newStimLabels,carryOverLabel));
+                    priorStimLabel=currentStimLabel;
+                end
+                thePacket.stimulus.metaData.stimLabels=newStimLabels;
+                thePacket.stimulus.metaData.stimTypes=newStimTypes';
+            end % create carry-over covariates
             
             % put the modified packet back into the cell arrray
             packetCellArray{ss,rr}=thePacket;
@@ -121,8 +134,11 @@ for ss=1:nSubjects
         
         % Plot the fit to the data
         
-        
-        
+        figure
+        plot(averageResponseStruct.timebase,averageResponseStruct.values)
+        hold on
+        plot(modelResponseStruct.timebase,modelResponseStruct.values)
+        hold off
     end % loop over modulation directions
 end % loop over subjects
 

@@ -49,7 +49,7 @@ nSplits=length(splitPartitionsCellArray);
 partitionCounter=1;
 nTargetTrain=ceil(nPairs*0.66);
 for ii=1:nSplits
-    % Filter to include only partitions with a 66/33 train/test ratio
+    % Filter to include only partitions with the target train/test ratio
     if length(splitPartitionsCellArray{ii}{1})==nTargetTrain
         for jj=1:nBasePartitions
             partitionRow=basePartitionMatrix(jj,:);
