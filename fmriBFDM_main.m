@@ -76,6 +76,9 @@ end
 % Model and remove the attention events from the responses in each packet
 [packetCellArray] = fmriBDFM_RegressAttentionEventsFromPacketCellArray(packetCellArray, hrfKernelStructCellArray);
 
+% Perform cross-validated model comparison
+fmriBDFM_CalculateCrossValFits(packetCellArray, hrfKernelStructCellArray);
+
 % Fit the IAMP model to the average responses for each subject, modulation
 % direction, and stimulus order
 [fitResultsStructAvgResponseCellArray] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);

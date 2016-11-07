@@ -76,11 +76,11 @@ for ss=1:nSubjects
         
         % Concatenate the A and B stimulus order pairs
         subPacketCellArray=fmriBDFM_ConcatenateABPairs(subPacketCellArray);
-                        
+        
         % Conduct the cross validation
         [ xValFitStructure, averageResponseStruct, modelResponseStruct ] = crossValidateFits( subPacketCellArray, tfeHandle, ...
-            'partitionMethod','twentyPercent', ... 
-            'maxPartitions',20, ... 
+            'partitionMethod','twentyPercent', ...
+            'maxPartitions',20, ...
             'aggregateMethod', 'mean',...
             'verbosity', 'none',...
             'searchMethod', 'linearRegression', ...
@@ -92,11 +92,15 @@ for ss=1:nSubjects
         subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
         plot(averageResponseStruct.timebase,averageResponseStruct.values)
         hold on
-        plot(modelResponseStruct.timebase,modelResponseStruct.values)        
+        plot(modelResponseStruct.timebase,modelResponseStruct.values)
         title(modDirections(ii))
         xlabel('time [msecs]');
         ylabel('response [%]'); set(gca,'FontSize',15); colorbar;
         hold off
+        
+        % Report the train and test fvals
+        fprintf('\t\t\t R-squared train: %g , test: %g \n', 1-mean(xValFitStructure.trainfVals), 1-mean(xValFitStructure.testfVals));
+        
     end % loop over modulation directions
 end % loop over subjects
 delete(tfeHandle);
@@ -122,14 +126,14 @@ for ss=1:nSubjects
         
         % Convert the stimLabels and stimTypes to carry-over format
         subPacketCellArray = fmriBDFM_CreateCarryOverStimTypes(subPacketCellArray);
-
+        
         % Concatenate the A and B stimulus order pairs
         subPacketCellArray=fmriBDFM_ConcatenateABPairs(subPacketCellArray);
-                
+        
         % Conduct the cross validation
         [ xValFitStructure, averageResponseStruct, modelResponseStruct ] = crossValidateFits( subPacketCellArray, tfeHandle, ...
-            'partitionMethod','twentyPercent', ... 
-            'maxPartitions',20, ... 
+            'partitionMethod','twentyPercent', ...
+            'maxPartitions',20, ...
             'aggregateMethod', 'mean',...
             'verbosity', 'none',...
             'searchMethod', 'linearRegression', ...
@@ -141,11 +145,15 @@ for ss=1:nSubjects
         subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
         plot(averageResponseStruct.timebase,averageResponseStruct.values)
         hold on
-        plot(modelResponseStruct.timebase,modelResponseStruct.values)        
+        plot(modelResponseStruct.timebase,modelResponseStruct.values)
         title(modDirections(ii))
         xlabel('time [msecs]');
         ylabel('response [%]'); set(gca,'FontSize',15); colorbar;
         hold off
+        
+        % Report the train and test fvals
+        fprintf('\t\t\t R-squared train: %g , test: %g \n', 1-mean(xValFitStructure.trainfVals), 1-mean(xValFitStructure.testfVals));
+        
     end % loop over modulation directions
 end % loop over subjects
 delete(tfeHandle);
@@ -171,11 +179,11 @@ for ss=1:nSubjects
         
         % Concatenate the A and B stimulus order pairs
         subPacketCellArray=fmriBDFM_ConcatenateABPairs(subPacketCellArray);
-                
+        
         % Conduct the cross validation
         [ xValFitStructure, averageResponseStruct, modelResponseStruct ] = crossValidateFits( subPacketCellArray, tfeBTRMHandle, ...
-            'partitionMethod','twentyPercent', ... 
-            'maxPartitions',20, ... 
+            'partitionMethod','twentyPercent', ...
+            'maxPartitions',20, ...
             'aggregateMethod', 'mean',...
             'verbosity', 'full',...
             'errorType', '1-r2');
@@ -186,15 +194,18 @@ for ss=1:nSubjects
         subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
         plot(averageResponseStruct.timebase,averageResponseStruct.values)
         hold on
-        plot(modelResponseStruct.timebase,modelResponseStruct.values)        
+        plot(modelResponseStruct.timebase,modelResponseStruct.values)
         title(modDirections(ii))
         xlabel('time [msecs]');
         ylabel('response [%]'); set(gca,'FontSize',15); colorbar;
         hold off
+        
+        % Report the train and test fvals
+        fprintf('\t\t\t R-squared train: %g , test: %g \n', 1-mean(xValFitStructure.trainfVals), 1-mean(xValFitStructure.testfVals));
+        
     end % loop over modulation directions
 end % loop over subjects
 delete(tfeBTRMHandle);
-
 
 
 end % main function
