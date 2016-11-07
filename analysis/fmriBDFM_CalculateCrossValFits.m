@@ -1,41 +1,25 @@
-function [ xValFitStructureCellArray ] = fmriBDFM_CalculateCrossValFits(packetCellArray, hrfKernelStructCellArray, varargin)
+function [ ] = fmriBDFM_CalculateCrossValFits(packetCellArray, hrfKernelStructCellArray)
 % function [packetCellArray] = fmriBDFM_CalculateCrossValFits(thePacket, hrfKernelStructCellArray)
 %
 
-%% Parse vargin for options passed here
-%
-% Setting 'KeepUmatched' to true means that we can pass the varargin{:})
-% along from a calling routine without an error here, if the key/value
-% pairs recognized by the calling routine are not needed here.
-p = inputParser; p.KeepUnmatched = true;
-p.addRequired('packetCellArray',@iscell);
-p.addRequired('hrfKernelStructCellArray',@iscell);
-p.addParameter('carryCovars',false,@islogical);
-p.parse(packetCellArray,hrfKernelStructCellArray,varargin{:});
-
 % Announce our intentions
-fprintf('>> Calculating cross-validated parameters\n');
-
-% Construct the model object
-tfeHandle = tfeIAMP('verbosity','none');
-
-% How many partitions will we test in the cross validation?
-maxPartitions=100;
-
-fprintf(['\t Will examine ' strtrim(num2str(maxPartitions)) ' parititions for each subject / direction.\n']);
+fprintf('>> Conducting sequential model fits to the data\n');
 
 %% Prepare the packetCellArray for fitting
 % Loop through the packets and
 %  - prepare the HRF kernel
 %  - downsample the stimulus array for speed
-%  - create a carry-over aware set of stim types
 %  - build an array to identify the stimulus type in each packet
 
 fprintf('\t Preparing the HRFs and stimulus vectors\n');
 
-nSubjects=size(packetCellArray,1);
-nRuns=size(packetCellArray,2);
+% Construct the model object to be used for resampling
+tfeHandle = tfeIAMP('verbosity','none');
+
 modDirections={'LightFlux','L-M','S'};
+nSubjects=size(packetCellArray,1);
+nDirections=size(modDirections,2);
+nRuns=size(packetCellArray,2);
 for ss=1:nSubjects
     
     % Grab the average hrf and prepare it as a kernel
@@ -64,46 +48,24 @@ for ss=1:nSubjects
             newStimulusTimebase=linspace(0,totalResponseDuration-100,totalResponseDuration/100);
             thePacket.stimulus=tfeHandle.resampleTimebase(thePacket.stimulus,newStimulusTimebase);
             
-            % create carry-over stimLabels and stimTypes
-            if p.Results.carryCovars
-                if ischar(thePacket.stimulus.metaData.stimLabels{1})
-                    uniqueStimLabels=unique(thePacket.stimulus.metaData.stimLabels);
-                end
-                if isnumeric(thePacket.stimulus.metaData.stimLabels{1})
-                    uniqueStimLabels=unique(cell2mat(thePacket.stimulus.metaData.stimLabels));
-                    uniqueStimLabels=cellfun(@num2str, num2cell(uniqueStimLabels), 'UniformOutput', false);
-                end
-                newStimLabels=cell(1);
-                labelCounter=1;
-                for uu=1:length(uniqueStimLabels) % prior stimulus
-                    for vv=1:length(uniqueStimLabels) % current stimulus
-                        newStimLabels{labelCounter}=[uniqueStimLabels{uu} '_x_' uniqueStimLabels{vv}];
-                        labelCounter=labelCounter+1;
-                    end
-                end
-                stimTypes=thePacket.stimulus.metaData.stimTypes;
-                priorStimLabel=uniqueStimLabels{1};
-                for ii=1:length(stimTypes)
-                    currentStimLabel=uniqueStimLabels{stimTypes(ii)};
-                    carryOverLabel=[priorStimLabel '_x_' currentStimLabel];
-                    newStimTypes(ii)=find(strcmp(newStimLabels,carryOverLabel));
-                    priorStimLabel=currentStimLabel;
-                end
-                thePacket.stimulus.metaData.stimLabels=newStimLabels;
-                thePacket.stimulus.metaData.stimTypes=newStimTypes';
-            end % create carry-over covariates
-            
             % put the modified packet back into the cell arrray
             packetCellArray{ss,rr}=thePacket;
             
         end % the packet is not empty
     end % loop over runs
 end % loop over subjects
+delete(tfeHandle);
 
-fprintf('\t Looping over subjects and modulation directions\n');
+%% Obtain cross-validated variance explained for the IAMP model
+
+fprintf('\t Obtain cross-validated variance explained for the IAMP model\n');
+figure
+
+% Construct the model object to be used for resampling
+tfeHandle = tfeIAMP('verbosity','none');
 
 for ss=1:nSubjects
-    for ii=1:length(modDirections)
+    for ii=1:nDirections
         
         fprintf('\t\t * Subject <strong>%g</strong> , modDirection <strong>%g</strong>\n', ss, ii);
         
@@ -112,38 +74,128 @@ for ss=1:nSubjects
         theCellIndices=find( strcmp(modulationDirectionCellArray(ss,:),modDirections{ii})==1 );
         subPacketCellArray=packetCellArray(ss,theCellIndices);
         
-        % Build a linked partition matrix for this set of packets
-%        partitionMatrix = fmriBDFM_CreateLinkedPartitionMatrix(subPacketCellArray);
-        partitionMatrix = fmriBDFM_CreateLinkedBootstrapMatrix(subPacketCellArray);
-        nPartitions=size(partitionMatrix,1);
-        
-        % Take a random subset of all available partitions
-        ix=randperm(nPartitions);
-        partitionMatrix=partitionMatrix(ix,:);
-        partitionMatrix=partitionMatrix(1:maxPartitions,:);
-        nPartitions=size(partitionMatrix,1);
-        
+        % Concatenate the A and B stimulus order pairs
+        subPacketCellArray=fmriBDFM_ConcatenateABPairs(subPacketCellArray);
+                        
         % Conduct the cross validation
         [ xValFitStructure, averageResponseStruct, modelResponseStruct ] = crossValidateFits( subPacketCellArray, tfeHandle, ...
-            'partitionMatrix', partitionMatrix, ...
-            'partitionMethod', 'bootstrap', ...
-            'maxPartitions', 100, ...
+            'partitionMethod','twentyPercent', ... 
+            'maxPartitions',20, ... 
             'aggregateMethod', 'mean',...
             'verbosity', 'none',...
             'searchMethod', 'linearRegression', ...
             'errorType', '1-r2');
         
-        xValFitStructureCellArray{ss,ii}=xValFitStructure;
+        xValFitStructureCellArray_IAMP{ss,ii}=xValFitStructure;
         
         % Plot the fit to the data
-        
-        figure
+        subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
         plot(averageResponseStruct.timebase,averageResponseStruct.values)
         hold on
-        plot(modelResponseStruct.timebase,modelResponseStruct.values)
+        plot(modelResponseStruct.timebase,modelResponseStruct.values)        
+        title(modDirections(ii))
+        xlabel('time [msecs]');
+        ylabel('response [%]'); set(gca,'FontSize',15); colorbar;
         hold off
     end % loop over modulation directions
 end % loop over subjects
+delete(tfeHandle);
+
+
+%% Obtain cross-validated variance explained for the IAMP model with carry-over
+
+fprintf('\t Obtain cross-validated variance explained for the IAMP model with carry over\n');
+figure
+
+% Construct the model object to be used for resampling
+tfeHandle = tfeIAMP('verbosity','none');
+
+for ss=1:nSubjects
+    for ii=1:nDirections
+        
+        fprintf('\t\t * Subject <strong>%g</strong> , modDirection <strong>%g</strong>\n', ss, ii);
+        
+        % Identify the set of packets with this modulation direction for
+        % this subject
+        theCellIndices=find( strcmp(modulationDirectionCellArray(ss,:),modDirections{ii})==1 );
+        subPacketCellArray=packetCellArray(ss,theCellIndices);
+        
+        % Convert the stimLabels and stimTypes to carry-over format
+        subPacketCellArray = fmriBDFM_CreateCarryOverStimTypes(subPacketCellArray);
+
+        % Concatenate the A and B stimulus order pairs
+        subPacketCellArray=fmriBDFM_ConcatenateABPairs(subPacketCellArray);
+                
+        % Conduct the cross validation
+        [ xValFitStructure, averageResponseStruct, modelResponseStruct ] = crossValidateFits( subPacketCellArray, tfeHandle, ...
+            'partitionMethod','twentyPercent', ... 
+            'maxPartitions',20, ... 
+            'aggregateMethod', 'mean',...
+            'verbosity', 'none',...
+            'searchMethod', 'linearRegression', ...
+            'errorType', '1-r2');
+        
+        xValFitStructureCellArray_carryIAMP{ss,ii}=xValFitStructure;
+        
+        % Plot the fit to the data
+        subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
+        plot(averageResponseStruct.timebase,averageResponseStruct.values)
+        hold on
+        plot(modelResponseStruct.timebase,modelResponseStruct.values)        
+        title(modDirections(ii))
+        xlabel('time [msecs]');
+        ylabel('response [%]'); set(gca,'FontSize',15); colorbar;
+        hold off
+    end % loop over modulation directions
+end % loop over subjects
+delete(tfeHandle);
+
+
+%% Obtain cross-validated variance explained for the BTRM model
+
+fprintf('\t Obtain cross-validated variance explained for the BTRM model\n');
+figure
+
+% Construct the model object to be used for resampling
+tfeBTRMHandle = tfeBTRM('verbosity','none');
+
+for ss=1:nSubjects
+    for ii=1:nDirections
+        
+        fprintf('\t\t * Subject <strong>%g</strong> , modDirection <strong>%g</strong>\n', ss, ii);
+        
+        % Identify the set of packets with this modulation direction for
+        % this subject
+        theCellIndices=find( strcmp(modulationDirectionCellArray(ss,:),modDirections{ii})==1 );
+        subPacketCellArray=packetCellArray(ss,theCellIndices);
+        
+        % Concatenate the A and B stimulus order pairs
+        subPacketCellArray=fmriBDFM_ConcatenateABPairs(subPacketCellArray);
+                
+        % Conduct the cross validation
+        [ xValFitStructure, averageResponseStruct, modelResponseStruct ] = crossValidateFits( subPacketCellArray, tfeBTRMHandle, ...
+            'partitionMethod','twentyPercent', ... 
+            'maxPartitions',20, ... 
+            'aggregateMethod', 'mean',...
+            'verbosity', 'full',...
+            'errorType', '1-r2');
+        
+        xValFitStructureCellArray_BTRM{ss,ii}=xValFitStructure;
+        
+        % Plot the fit to the data
+        subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
+        plot(averageResponseStruct.timebase,averageResponseStruct.values)
+        hold on
+        plot(modelResponseStruct.timebase,modelResponseStruct.values)        
+        title(modDirections(ii))
+        xlabel('time [msecs]');
+        ylabel('response [%]'); set(gca,'FontSize',15); colorbar;
+        hold off
+    end % loop over modulation directions
+end % loop over subjects
+delete(tfeBTRMHandle);
+
+
 
 end % main function
 
