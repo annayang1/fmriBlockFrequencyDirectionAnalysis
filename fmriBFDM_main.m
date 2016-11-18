@@ -36,7 +36,7 @@ resultCacheBehavior='skip';
 switch stimulusCacheBehavior
     case 'make'
         % inform the user
-        fprintf(['>> Creating response structures for the region >' regionTags{tt} '<\n']);
+        fprintf('>> Creating stimulius structures for this experiment\n');
 
         % obtain the stimulus structures for all sessions and runs
         [stimStructCellArray] = fmriBFDM_LoadStimStructCellArray(userName);
@@ -64,7 +64,10 @@ for tt = 1:length(regionTags)
     %% Create or load the responseStructCellArrays
     switch responseCacheBehavior
         case 'make'
-            % obtain the response structures for all sessions and runs
+        % inform the user
+        fprintf(['>> Creating response structures for the region >' regionTags{tt} '<\n']);
+
+        % obtain the response structures for all sessions and runs
             [responseStructCellArray] = fmriBFDM_LoadResponseStructCellArray(regionTags{tt}, clusterDataDir);
             
             % calculate the hex MD5 hash for the responseCellArray
