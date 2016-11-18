@@ -59,6 +59,8 @@ end
 
 %% Loop over the regions to be analyzed
 
+responseStructCellArray=[];
+
 for tt = 1:length(regionTags)
     
     %% Create or load the responseStructCellArrays
@@ -66,7 +68,8 @@ for tt = 1:length(regionTags)
         case 'make'
         % inform the user
         fprintf(['>> Creating response structures for the region >' regionTags{tt} '<\n']);
-
+        clear responseStructCellArray
+        
         % obtain the response structures for all sessions and runs
             [responseStructCellArray] = fmriBFDM_LoadResponseStructCellArray(regionTags{tt}, clusterDataDir);
             
