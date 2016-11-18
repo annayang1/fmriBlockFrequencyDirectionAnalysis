@@ -51,3 +51,4 @@ metaData.sessionObserver=makeResponseStructParams.sessionObserver;
 metaData.sessionDate=makeResponseStructParams.sessionDate;
 metaData.TRmsecs=TR*1000;
 metaData.stimulusOrderAorB = makeResponseStructParams.stimulusOrderAorB;
+metaData.regionTag = makeResponseStructParams.regionTag;

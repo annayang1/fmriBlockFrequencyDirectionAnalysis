@@ -64,6 +64,7 @@ for ss = 1:length(responseSessDirs)
     makeResponseStructParams.sessionDate = tmp{3};
     makeResponseStructParams.packetType       = 'fMRI';
     makeResponseStructParams.responseDir       = fullfile(clusterDataDir, responseSessDirs{ss});
+    makeResponseStructParams.regionTag = regionTag;
     
     runDirectoryList=listdir(fullfile(makeResponseStructParams.responseDir, 'Series*'), 'dirs');
     nRuns=length(runDirectoryList);
@@ -110,10 +111,6 @@ for ss = 1:length(responseSessDirs)
         [preMergeResponseStructCellArray{ss, ii}.values, ...
             preMergeResponseStructCellArray{ss, ii}.timebase, ...
             preMergeResponseStructCellArray{ss, ii}.metaData] = fmriBFDM_MakeResponseStruct(makeResponseStructParams);
-
-        % Add the region tag to the metaData
-        
-        preMergeResponseStructCellArray.metaData.regionTag = regionTag;
     
     end
     fprintf('\n');
