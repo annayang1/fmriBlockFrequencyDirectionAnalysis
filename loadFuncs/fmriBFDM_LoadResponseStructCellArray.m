@@ -1,10 +1,7 @@
-function [responseStructCellAray] = fmriBFDM_LoadResponseStructCellArray(userName)
+function [responseStructCellAray] = fmriBFDM_LoadResponseStructCellArray(regionTag, clusterDataDir)
 % function [responseStructCellAray] = fmriBFDM_LoadResponseStructCellArray(userName)
 %
 %
-
-% Set Cluster path used to load the response data files
-clusterDataDir=fullfile('/Users', userName, 'ccnCluster/MELA/');
 
 % Define the response file session directories
 responseSessDirs = {...
@@ -14,17 +11,49 @@ responseSessDirs = {...
     'MOUNT_SINAI/HERO_gka1/041516' ...
     };
 
-%responseSessDirs = {'MOUNT_SINAI/HERO_asb1/041416'};
+responseSessDirs = {'MOUNT_SINAI/HERO_asb1/041416'};
 
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
-%whichSessionsToMerge = {[1]};
+whichSessionsToMerge = {[1]};
 
 % Define the name of the response and areas file to load
 responseFileName='wdrf.tf.nii.gz';
-areasFileName='mh.areas.func.vol.nii.gz';
-eccFileName='mh.ecc.func.vol.nii.gz';
-areasIndex=1; % This indexes area V1
+
+switch regionTag
+    case 'V1_0-30'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=1; % This indexes area V1
+        eccRange=[0 30];
+    case 'V1_0-2'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=1; % This indexes area V1
+        eccRange=[0 2];
+    case 'V1_2-8'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=1; % This indexes area V1
+        eccRange=[2 8];
+    case 'V1_8-17'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=1; % This indexes area V1
+        eccRange=[8 17];
+    case 'V1_17-30'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=1; % This indexes area V1
+        eccRange=[17 30];
+    case 'LGN'
+        areasFileName='mh.LGN.func.vol.nii.gz';
+        eccFileName=[];
+        areasIndex=1; % This indexes the LGN
+        eccRange=[];
+    otherwise
+        error('That is not a regionTag that I know');
+end
 
 fprintf('>> Creating response structures\n');
 
@@ -40,7 +69,7 @@ for ss = 1:length(responseSessDirs)
     
     runDirectoryList=listdir(fullfile(makeResponseStructParams.responseDir, 'Series*'), 'dirs');
     nRuns=length(runDirectoryList);
-        
+    
     % Display some useful information
     fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong>\n', makeResponseStructParams.sessionObserver, makeResponseStructParams.sessionDate);
     
@@ -51,9 +80,13 @@ for ss = 1:length(responseSessDirs)
         makeResponseStructParams.runNum           = ii;
         makeResponseStructParams.responseFile = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), responseFileName);
         makeResponseStructParams.areasFile    = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), areasFileName);
-        makeResponseStructParams.eccFile    = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), eccFileName);        
-        makeResponseStructParams.eccRange = [0 30];
-        makeResponseStructParams.areaIndex = 1;
+        if ~isempty(eccFileName)
+            makeResponseStructParams.eccFile    = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), eccFileName);
+        else
+            makeResponseStructParams.eccFile    = [];
+        end
+        makeResponseStructParams.eccRange = eccRange;
+        makeResponseStructParams.areaIndex = areasIndex;
         
         % Identify if this is stim order A or B from the runDirectory name
         tmp = strsplit(runDirectoryList{ii},'_');
@@ -77,9 +110,13 @@ for ss = 1:length(responseSessDirs)
         
         % Make the response structure
         [preMergeResponseStructCellArray{ss, ii}.values, ...
-         preMergeResponseStructCellArray{ss, ii}.timebase, ...
-         preMergeResponseStructCellArray{ss, ii}.metaData] = fmriBFDM_MakeResponseStruct(makeResponseStructParams);
-        gribble=1;
+            preMergeResponseStructCellArray{ss, ii}.timebase, ...
+            preMergeResponseStructCellArray{ss, ii}.metaData] = fmriBFDM_MakeResponseStruct(makeResponseStructParams);
+
+        % Add the region tag to the metaData
+        
+        preMergeResponseStructCellArray.metaData.regionTag = regionTag;
+    
     end
     fprintf('\n');
 end

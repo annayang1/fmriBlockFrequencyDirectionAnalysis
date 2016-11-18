@@ -176,6 +176,9 @@ for ss=1:nSubjects
         % this subject
         theCellIndices=find( strcmp(modulationDirectionCellArray(ss,:),modDirections{ii})==1 );
         subPacketCellArray=packetCellArray(ss,theCellIndices);
+
+        % Convert the stimLabels and stimTypes to carry-over format
+        subPacketCellArray = fmriBDFM_CreateCarryOverStimTypes(subPacketCellArray);
         
         % Concatenate the A and B stimulus order pairs
         subPacketCellArray=fmriBDFM_ConcatenateABPairs(subPacketCellArray);

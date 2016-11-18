@@ -8,17 +8,17 @@ dropboxDataDir = fullfile('/Users', userName, '/Dropbox (Aguirre-Brainard Lab)/M
 
 % Define the stimulus file session directories
 stimulusSessDirs = {...
-    'HCLV_Photo_7T/HERO_asb1/041416' ...
-    'HCLV_Photo_7T/HERO_asb1/041516' ...
-    'HCLV_Photo_7T/HERO_gka1/041416' ...
-    'HCLV_Photo_7T/HERO_gka1/041516' ...
+    'fmriBlockFreqDirection7T/HERO_asb1/041416' ...
+    'fmriBlockFreqDirection7T/HERO_asb1/041516' ...
+    'fmriBlockFreqDirection7T/HERO_gka1/041416' ...
+    'fmriBlockFreqDirection7T/HERO_gka1/041516' ...
     };
 
-%stimulusSessDirs = {'HCLV_Photo_7T/HERO_asb1/041416'};
+stimulusSessDirs = {'fmriBlockFreqDirection7T/HERO_asb1/041416'};
 
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
-%whichSessionsToMerge = {[1]};
+whichSessionsToMerge = {[1]};
 
 fprintf('>> Creating stimulus structures\n');
 
@@ -28,6 +28,13 @@ for ss = 1:length(stimulusSessDirs)
     % params variable that will be passed to MakeStrimStruct
     tmp = strsplit(stimulusSessDirs{ss}, '/');
     makeStimStructParams.sessionType = tmp{1};
+
+    % Hack the name of the sessionType here because of some inconsistent
+    % names on the DropBox directory between the top level of the directory
+    % and the names of individual files
+    makeStimStructParams.sessionType = tmp{1};
+    makeStimStructParams.sessionType = 'HCLV_Photo_7T';
+
     makeStimStructParams.sessionObserver = tmp{2};
     makeStimStructParams.sessionDate = tmp{3};
     makeStimStructParams.packetType       = 'fMRI';
