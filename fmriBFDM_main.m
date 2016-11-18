@@ -23,7 +23,7 @@ clusterDataDir='/data/jag/MELA';
 responseStructCacheDir='responseStructCache';
 
 % Define the regions of interest to be studied
-regionTags={'V1_0-30' 'V1_0-2' 'V1_2-8' 'V1_8-17' 'V1_17-30' 'LGN'};
+regionTags={'LGN' 'V1_0-30' 'V1_0-2' 'V1_2-8' 'V1_8-17' 'V1_17-30'};
 
 % Define packetCacheBehavior. Options include:
 %    'make' - load and process stim/response files, save the packets
@@ -52,7 +52,7 @@ switch stimulusCacheBehavior
         stimStructCacheFileName=fullfile(dropboxAnalysisDir, stimulusStructCacheDir, [stimStructCellArrayHash '.mat']);
         load(stimStructCacheFileName);
     case 'skip'
-        warning('Proceeding without making or loading the stimStructCellArray');
+        fprintf('>> Skipping the stimStructCellArray');
     otherwise
         error('Please define a legal packetCacheBehavior');
 end
@@ -118,7 +118,7 @@ for tt = 1:length(regionTags)
             % Plot the carry-over matrices
             fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
         case 'skip'
-            warning('Proceeding  without making or loading the results');
+            fprintf('>> Skipping the analysis');
     end
     
 end % loop over regions
