@@ -105,13 +105,17 @@ for ss = 1:length(responseSessDirs)
         % Convert the file names from cell arrays to strings
         makeResponseStructParams.responseFile=makeResponseStructParams.responseFile{1};
         makeResponseStructParams.areasFile=makeResponseStructParams.areasFile{1};
-        makeResponseStructParams.eccFile=makeResponseStructParams.eccFile{1};
+        if ~isempty(eccFileName)
+            makeResponseStructParams.eccFile=makeResponseStructParams.eccFile{1};
+        else
+            makeResponseStructParams.eccFile=[];
+        end
         
         % Make the response structure
         [preMergeResponseStructCellArray{ss, ii}.values, ...
             preMergeResponseStructCellArray{ss, ii}.timebase, ...
             preMergeResponseStructCellArray{ss, ii}.metaData] = fmriBFDM_MakeResponseStruct(makeResponseStructParams);
-    
+        
     end
     fprintf('\n');
 end
