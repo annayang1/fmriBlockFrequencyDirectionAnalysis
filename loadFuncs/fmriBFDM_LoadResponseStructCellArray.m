@@ -11,11 +11,11 @@ responseSessDirs = {...
     'MOUNT_SINAI/HERO_gka1/041516' ...
     };
 
-responseSessDirs = {'MOUNT_SINAI/HERO_asb1/041416'};
+%responseSessDirs = {'MOUNT_SINAI/HERO_asb1/041416'};
 
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
-whichSessionsToMerge = {[1]};
+%whichSessionsToMerge = {[1]};
 
 % Define the name of the response and areas file to load
 responseFileName='wdrf.tf.nii.gz';
