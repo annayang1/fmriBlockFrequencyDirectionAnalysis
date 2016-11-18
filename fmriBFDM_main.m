@@ -74,12 +74,12 @@ for tt = 1:length(regionTags)
             responseStructCellArrayHash = DataHash(responseStructCellArray);
             
             % Set path to the packetCache and save it using the MD5 hash name
-            responseStructCacheFileName=fullfile(responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash '.mat']);
+            responseStructCacheFileName=fullfile(clusterDataDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash '.mat']);
             save(responseStructCacheFileName,'responseStructCellArray','-v7.3');
             fprintf(['Saved the packetCellArray with hash ID ' responseStructCellArrayHash '\n']);
         case 'load'
             fprintf('>> Loading cached responseStruct\n');
-            responseStructCacheFileName=fullfile(responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash '.mat']);
+            responseStructCacheFileName=fullfile(clusterDataDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash '.mat']);
             load(responseStructCacheFileName);
         otherwise
             error('Please define a legal packetCacheBehavior');
