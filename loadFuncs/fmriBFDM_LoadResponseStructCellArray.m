@@ -55,8 +55,6 @@ switch regionTag
         error('That is not a regionTag that I know');
 end
 
-fprintf('>> Creating response structures\n');
-
 for ss = 1:length(responseSessDirs)
     
     % Extract some information about this session and put it into the

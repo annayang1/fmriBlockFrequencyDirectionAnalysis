@@ -35,6 +35,9 @@ resultCacheBehavior='skip';
 
 switch stimulusCacheBehavior
     case 'make'
+        % inform the user
+        fprintf(['>> Creating response structures for the region >' regionTags{tt} '<\n']);
+
         % obtain the stimulus structures for all sessions and runs
         [stimStructCellArray] = fmriBFDM_LoadStimStructCellArray(userName);
         
