@@ -14,14 +14,14 @@ temporalFit = tfeIAMP('verbosity','none');
 % Define a parameter lock matrix, which in this case is empty
 paramLockMatrix = [];
 
-fprintf('>> Regressing out the attention event effects\n');
+fprintf('\t>> Regressing out the attention event effects\n');
 
 for ss=1:nSubjects
     for rr=1:nRuns
         thePacket=packetCellArray{ss,rr};
         if ~isempty(thePacket)
             if strcmp(verbosity,'full')
-                fprintf('\t* Session <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
+                fprintf('\t\t* Session <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
             end
             
             % create a stimulusStruct that models the attention events as

@@ -75,9 +75,8 @@ offset=min(data);
 data=data-offset;
 
 % Run the optimization
-fitParams = fminsearch( (@(p) WatsonAmplitudeFit(p, frequenciesHz, stdError, data)), initialParams);
-
-[msg, msgid] = lastwarn
+options = optimset('Display','none'); % Suppress the "exiting" message
+fitParams = fminsearch( (@(p) WatsonAmplitudeFit(p, frequenciesHz, stdError, data)), initialParams, options);
 
 % Obtain the Watson linear model fit at the passed frequencies. These are
 % the values that we return by default

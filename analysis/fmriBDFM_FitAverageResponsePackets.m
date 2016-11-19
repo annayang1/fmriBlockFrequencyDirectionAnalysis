@@ -20,7 +20,7 @@ end % loop over subjects
 modDirections={'LightFlux','L-M','S'};
 stimOrders={'A','B'};
 
-fprintf('>> Performing IAMP model fitting for average responses\n');
+fprintf('\t>> Performing IAMP model fitting for average responses\n');
 
 for ss=1:nSubjects
     if strcmp(plotting,'full')
@@ -29,7 +29,7 @@ for ss=1:nSubjects
     for ii=1:length(modDirections)
         for jj=1:length(stimOrders)
             if strcmp(verbosity,'full')
-                fprintf('\t* Subject <strong>%g</strong> , modDirection <strong>%g</strong>, stimOrder <strong>%g</strong>\n', ss, ii, jj);
+                fprintf('\t\t* Subject <strong>%g</strong> , modDirection <strong>%g</strong>, stimOrder <strong>%g</strong>\n', ss, ii, jj);
             end
             theCellIndices=find( (strcmp(modulationDirectionCellArray(ss,:),modDirections{ii})==1) & ...
                 (strcmp(stimulusOrderAorBCellArray(ss,:),stimOrders{jj})==1) );

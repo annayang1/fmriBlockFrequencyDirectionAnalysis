@@ -1,4 +1,4 @@
-function [  ] = fmriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
+function [ plotHandle ] = fmriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
 % function [  ] = fmriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
 
 % Get the dimensions of the passed cell array
@@ -14,7 +14,8 @@ stimOrders={'A','B'};
 theFrequencies=[0,2,4,8,16,32,64];
 colorStr = 'krb';
 
-figure
+plotHandle=figure();
+
 for ss=1:nSubjects
     for ii=1:nDirections
         responseMatrix=fmriBDFM_MakeCarryOverMatrix( fitResultsStructAvgResponseCellArray(ss,ii,:) );

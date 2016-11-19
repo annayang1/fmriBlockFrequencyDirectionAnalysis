@@ -1,4 +1,4 @@
-function []=fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray)
+function [plotHandle]=fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray)
 
 % Get the dimensions of the passed cell array
 nSubjects=size(fitResultsStructAvgResponseCellArray,1);
@@ -11,12 +11,13 @@ modDirections={'LightFlux','L-M','S'};
 stimOrders={'A','B'};
 theFrequencies=[0,2,4,8,16,32,64];
 colorStr = 'krb';
-yAxisLimits=[-0.5 1];
+yAxisLimits=[-0.5 1.5];
 
 % alert the user
-fprintf('>> Generating TTF plots\n');
+fprintf('\t>> Generating TTF plots\n');
 
-figure
+plotHandle=figure();
+
 for ss=1:nSubjects
     for ii=1:nDirections
 
