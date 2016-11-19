@@ -14,13 +14,11 @@ stimulusSessDirs = {...
     'fmriBlockFreqDirection7T/HERO_gka1/041516' ...
     };
 
-stimulusSessDirs = {'fmriBlockFreqDirection7T/HERO_asb1/041416'};
+%stimulusSessDirs = {'fmriBlockFreqDirection7T/HERO_asb1/041416'};
 
 % Define which sessions we'd like to merge
 whichSessionsToMerge = {[1 2], [3 4]};
-whichSessionsToMerge = {[1]};
-
-fprintf('>> Creating stimulus structures\n');
+%whichSessionsToMerge = {[1]};
 
 for ss = 1:length(stimulusSessDirs)
     
