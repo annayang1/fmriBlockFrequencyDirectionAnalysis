@@ -1,9 +1,8 @@
-function [fitResultsStructAvgResponseCellArray] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray)
+function [fitResultsStructAvgResponseCellArray, plotHandles] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray)
 % function [packetCellArray] = fmriBDFM_FitModelToPacketCellArray(thePacket, hrfKernelStructCellArray)
 %
 
 verbosity='none';
-plotting='none';
 
 % Build some arrays to identify the stimulus types in each packet
 nSubjects=size(packetCellArray,1);
@@ -23,9 +22,8 @@ stimOrders={'A','B'};
 fprintf('\t>> Performing IAMP model fitting for average responses\n');
 
 for ss=1:nSubjects
-    if strcmp(plotting,'full')
-        figure
-    end
+    plotHandles(ss)=figure();
+    
     for ii=1:length(modDirections)
         for jj=1:length(stimOrders)
             if strcmp(verbosity,'full')
@@ -49,11 +47,9 @@ for ss=1:nSubjects
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.stimTypes=tempPacket.stimulus.metaData.stimTypes;
             fitResultsStructAvgResponseCellArray{ss,ii,jj}.stimLabels=tempPacket.stimulus.metaData.stimLabels;
             
-            if strcmp(plotting,'full')
-                subplot(length(modDirections),length(stimOrders),jj+(ii-1)*length(stimOrders));
-                fmriBDFM_PlotTimeSeriesFits(tempPacket.stimulus,tempPacket.response,modelResponseStruct)
-                title([modDirections{ii} ' order ' stimOrders{jj}]);
-            end
+            subplot(length(modDirections),length(stimOrders),jj+(ii-1)*length(stimOrders));
+            fmriBDFM_PlotTimeSeriesFits(tempPacket.stimulus,tempPacket.response,modelResponseStruct)
+            title([modDirections{ii} ' order ' stimOrders{jj}]);
         end % loop over modulation directions
     end % loop over stimulus orders
 end % loop over subjects

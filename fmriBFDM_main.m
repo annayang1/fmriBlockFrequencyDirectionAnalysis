@@ -191,11 +191,15 @@ if strcmp (resultCacheBehavior,'make');
         
         % Fit the IAMP model to the average responses for each subject, modulation
         % direction, and stimulus order
-        [fitResultsStructAvgResponseCellArray] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
-        
-        % Add the hash values for the packet and kernel to the results
-        %fitResultsStructAvgResponseCellArray.metaData.packetCellArrayHash=packetCellArrayHash{tt};
-        %fitResultsStructAvgResponseCellArray.metaData.kernelStructCellArrayHash=kernelStructCellArrayHash;
+        [fitResultsStructAvgResponseCellArray, plotHandles] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
+
+        % Plot and save the TimeSeries
+        for ss=1:length(plotHandles)
+            suptitle(plotHandles(ss),['TimeSeries for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+            plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TimeSeries_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
+            saveas(plotHandles(ss), plotFileName, 'pdf');
+            close(plotHandles(ss));
+        end
         
         % calculate the hex MD5 hash for the fitResultsStructAvgResponseCellArray
         resultsStructCellArrayHash = DataHash(fitResultsStructAvgResponseCellArray);
@@ -205,18 +209,22 @@ if strcmp (resultCacheBehavior,'make');
         save(resultsStructCacheFileName,'fitResultsStructAvgResponseCellArray','-v7.3');
         
         % Plot and save the TTFs
-        ttfPlotHandle = fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
-        title(['TTFs for ' regionTags{tt}]);
-        plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TTFs_' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
-        saveas(ttfPlotHandle, plotFileName, 'pdf');
-        close(ttfPlotHandle);
+        plotHandles = fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
+        for ss=1:length(plotHandles)
+            suptitle(plotHandles(ss),['TTFs for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+            plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TTFs_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
+            saveas(plotHandles(ss), plotFileName, 'pdf');
+            close(plotHandles(ss));
+        end
         
         % Plot the carry-over matrices
-        carryOverplotHandle = fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
-        title(['Carry-Over Matrix for ' regionTags{tt}]);
-        plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['CarryOver_' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
-        saveas(carryOverplotHandle, plotFileName, 'pdf');
-        close(carryOverplotHandle);
+        plotHandles = fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
+        for ss=1:length(plotHandles)
+            suptitle(plotHandles(ss),['CarryOver for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+            plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['CarryOver_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
+            saveas(plotHandles(ss), plotFileName, 'pdf');
+            close(plotHandles(ss));
+        end
         
     end % loop over regions
 end % Check if analysis is requested

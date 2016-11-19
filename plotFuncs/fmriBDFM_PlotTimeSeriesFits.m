@@ -13,4 +13,5 @@ yLims = get(gca,'YLim'); xLims = get(gca,'XLim');
 ylim([-2,2]);
 ylabel('% change');
 xlabel('time [sec]'); 
-gribble = 1;
+
+end % function
