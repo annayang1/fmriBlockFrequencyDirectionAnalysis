@@ -100,34 +100,35 @@ switch stimulusCacheBehavior
         error('Please define a legal packetCacheBehavior');
 end
 
+%% Make the responseStructCellArrays, if requested
+if strcmp (responseCacheBehavior,'make');
+    for tt = 1:length(regionTags)
+        % inform the user
+        fprintf(['>> Creating response structures for the region >' regionTags{tt} '<\n']);
+        clear responseStructCellArray % minimizing memory footprint across loops
+        
+        % obtain the response structures for all sessions and runs
+        [responseStructCellArray] = fmriBFDM_LoadResponseStructCellArray(regionTags{tt}, responseDataDir);
+        
+        % calculate the hex MD5 hash for the responseCellArray
+        responseStructCellArrayHash{tt} = DataHash(responseStructCellArray);
+        
+        % Set path to the packetCache and save it using the MD5 hash name
+        responseStructCacheFileName=fullfile(responseDataDir, packetCacheDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash{tt} '.mat']);
+        save(responseStructCacheFileName,'responseStructCellArray','-v7.3');
+        fprintf(['Saved the responseStruct with hash ID ' responseStructCellArrayHash{tt} '\n']);
+    end % loop over regions
+end % check if we are to make responseStructs
+
+
 %% Make the packetCellArray, if requested
 if strcmp (packetCacheBehavior,'make');
     for tt = 1:length(regionTags)
         
-        %% Create or load the responseStructCellArrays
-        switch responseCacheBehavior
-            case 'make'
-                % inform the user
-                fprintf(['>> Creating response structures for the region >' regionTags{tt} '<\n']);
-                clear responseStructCellArray % minimizing memory footprint across loops
-                
-                % obtain the response structures for all sessions and runs
-                [responseStructCellArray] = fmriBFDM_LoadResponseStructCellArray(regionTags{tt}, responseDataDir);
-                
-                % calculate the hex MD5 hash for the responseCellArray
-                responseStructCellArrayHash{tt} = DataHash(responseStructCellArray);
-                
-                % Set path to the packetCache and save it using the MD5 hash name
-                responseStructCacheFileName=fullfile(responseDataDir, packetCacheDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash{tt} '.mat']);
-                save(responseStructCacheFileName,'responseStructCellArray','-v7.3');
-                fprintf(['Saved the responseStruct with hash ID ' responseStructCellArrayHash{tt} '\n']);
-            case 'load'
-                fprintf('>> Loading cached responseStruct\n');
-                responseStructCacheFileName=fullfile(dropboxAnalysisDir, packetCacheDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash{tt} '.mat']);
-                load(responseStructCacheFileName);
-            otherwise
-                error('Please define a legal packetCacheBehavior');
-        end
+        % Load the responseStructs
+        fprintf('>> Loading cached responseStruct\n');
+        responseStructCacheFileName=fullfile(dropboxAnalysisDir, packetCacheDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash{tt} '.mat']);
+        load(responseStructCacheFileName);
         
         % assemble the stimulus and response structures into packets
         [packetCellArray] = fmriBFDM_MakeAndCheckPacketCellArray( stimStructCellArray, responseStructCellArray );
@@ -199,7 +200,7 @@ if strcmp (resultCacheBehavior,'make');
         % Fit the IAMP model to the average responses for each subject, modulation
         % direction, and stimulus order
         [fitResultsStructAvgResponseCellArray, plotHandles] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
-
+        
         % Plot and save the TimeSeries
         for ss=1:length(plotHandles)
             fmriBDFM_suptitle(plotHandles(ss),['TimeSeries for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
