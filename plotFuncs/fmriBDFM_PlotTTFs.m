@@ -11,6 +11,7 @@ modDirections={'LightFlux','L-M','S'};
 stimOrders={'A','B'};
 theFrequencies=[0,2,4,8,16,32,64];
 colorStr = 'krb';
+yAxisLimits=[-0.5 1];
 
 % alert the user
 fprintf('>> Generating TTF plots\n');
@@ -54,5 +55,7 @@ for ss=1:nSubjects
         plot(get(gca,'xlim'), [semAmplitudeByFreq(1) semAmplitudeByFreq(1)], 'color',[0.5 0.5 0.5]); % Adapts to x limits of current axes
         plot(get(gca,'xlim'), [-semAmplitudeByFreq(1) -semAmplitudeByFreq(1)], 'color',[0.5 0.5 0.5]); % Adapts to x limits of current axes
         
+        % Set the ylim
+        ylim(yAxisLimits);
     end % loop over modulation directions
 end % loop over subjects

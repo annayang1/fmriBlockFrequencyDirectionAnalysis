@@ -108,12 +108,12 @@ if strcmp (packetCacheBehavior,'make');
                 [responseStructCellArray] = fmriBFDM_LoadResponseStructCellArray(regionTags{tt}, responseDataDir);
                 
                 % calculate the hex MD5 hash for the responseCellArray
-                responseStructCellArrayHash = DataHash(responseStructCellArray);
+                responseStructCellArrayHash{tt} = DataHash(responseStructCellArray);
                 
                 % Set path to the packetCache and save it using the MD5 hash name
-                responseStructCacheFileName=fullfile(responseDataDir, packetCacheDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash '.mat']);
+                responseStructCacheFileName=fullfile(responseDataDir, packetCacheDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash{tt} '.mat']);
                 save(responseStructCacheFileName,'responseStructCellArray','-v7.3');
-                fprintf(['Saved the responseStruct with hash ID ' responseStructCellArrayHash '\n']);
+                fprintf(['Saved the responseStruct with hash ID ' responseStructCellArrayHash{tt} '\n']);
             case 'load'
                 fprintf('>> Loading cached responseStruct\n');
                 responseStructCacheFileName=fullfile(responseDataDir, packetCacheDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash{tt} '.mat']);
@@ -133,12 +133,12 @@ if strcmp (packetCacheBehavior,'make');
         [packetCellArray] = fmriBDFM_DeriveHRFsForPacketCellArray(packetCellArray);
         
         % calculate the hex MD5 hash for the packetCellArray
-        packetCellArrayHash = DataHash(packetCellArray);
+        packetCellArrayHash{tt} = DataHash(packetCellArray);
         
         % Set path to the packetCache and save it using the MD5 hash name
-        packetCacheFileName=fullfile(responseDataDir, packetCacheDir, [regionTags{tt} '_' packetCellArrayHash '.mat']);
+        packetCacheFileName=fullfile(responseDataDir, packetCacheDir, [regionTags{tt} '_' packetCellArrayHash{tt} '.mat']);
         save(packetCacheFileName,'packetCellArray','-v7.3');
-        fprintf(['Saved the packetCellArray with hash ID ' packetCellArrayHash '\n']);
+        fprintf(['Saved the packetCellArray with hash ID ' packetCellArrayHash{tt} '\n']);
         
     end % loop over regions
 end % check if we are to make packets
@@ -197,7 +197,7 @@ if strcmp (resultCacheBehavior,'make');
         fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
         
         % Plot the carry-over matrices
-        fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
+%        fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
     end % loop over regions
 end % Check if analysis is requested
 

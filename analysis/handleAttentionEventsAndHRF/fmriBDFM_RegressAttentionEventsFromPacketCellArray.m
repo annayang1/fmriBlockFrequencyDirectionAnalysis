@@ -3,6 +3,8 @@ function [packetCellArray] = fmriBDFM_RegressAttentionEventsFromPacketCellArray(
 %
 %
 
+verbosity='none';
+
 nSubjects=size(packetCellArray,1);
 nRuns=size(packetCellArray,2);
 
@@ -18,7 +20,9 @@ for ss=1:nSubjects
     for rr=1:nRuns
         thePacket=packetCellArray{ss,rr};
         if ~isempty(thePacket)
-            fprintf('\t* Session <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
+            if strcmp(verbosity,'full')
+                fprintf('\t* Session <strong>%g</strong> / <strong>%g</strong>, Run <strong>%g</strong> / <strong>%g</strong>\n', ss, nSubjects, rr, nRuns);
+            end
             
             % create a stimulusStruct that models the attention events as
             % impulses
@@ -26,8 +30,8 @@ for ss=1:nSubjects
             stimulusStruct.values=stimulusStruct.timebase*0;
             stimulusStruct.values(1,thePacket.stimulus.metaData.eventTimesArray)=1;
             stimulusStruct.values= ...
-                    stimulusStruct.values-mean(stimulusStruct.values);
-
+                stimulusStruct.values-mean(stimulusStruct.values);
+            
             % prepare kernelStruct from the mean HRF for each subject
             kernelStruct=prepareHRFKernel(hrfKernelStructCellArray{ss});
             
