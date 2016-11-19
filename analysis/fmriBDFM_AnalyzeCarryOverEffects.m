@@ -28,7 +28,10 @@ for ss=1:nSubjects
         subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
         imagesc(responseMatrix,clims(ii,:));
         title(modDirections(ii)); set(gca,'xticklabel',([0 2 4 8 16 32 64]));
-        set(gca,'yticklabel',([0 2 4 8 16 32 64])); xlabel('Current stimulus');
+        set(gca,'yticklabel',([0 2 4 8 16 32 64]));
+        if ss==nSubjects
+            xlabel('Current stimulus');
+        end
         ylabel('Prior stimulus'); set(gca,'FontSize',15); colorbar;
     end
 end
