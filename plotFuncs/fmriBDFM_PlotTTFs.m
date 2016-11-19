@@ -18,7 +18,7 @@ fprintf('\t>> Generating TTF plots\n');
 
 for ss=1:nSubjects
     
-    plotHandles=figure();
+    plotHandles(ss)=figure();
 
     for ii=1:nDirections
 
@@ -45,7 +45,7 @@ for ss=1:nSubjects
             fitWatsonToTTF_errorGuided(theFrequencies(2:7),meanAmplitudeByFreq(2:7),semAmplitudeByFreq(2:7),0);
         
         % Plot this subject / direction
-        subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
+        subplot(nDirections,ii);
         plot(frequenciesHz_fine,y+offset,[colorStr(ii) '-']);
         hold on
         errorbar(theFrequencies(2:7),meanAmplitudeByFreq(2:7),semAmplitudeByFreq(2:7),[colorStr(ii) 'o']);

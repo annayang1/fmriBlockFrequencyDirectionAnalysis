@@ -17,11 +17,11 @@ areaData                     = load_nifti(makeResponseStructParams.areasFile);
 
 if ~isempty(makeResponseStructParams.eccFile)
     eccData                      = load_nifti(makeResponseStructParams.eccFile);
-    areaIndices = find(abs(areaData.vol)==makeResponseStructParams.areaIndex &...
+    areaIndices = ismember(abs(areaData.vol),makeResponseStructParams.areaIndex) &...
         eccData.vol>makeResponseStructParams.eccRange(1) &...
         eccData.vol<makeResponseStructParams.eccRange(2));
 else
-    areaIndices = find(abs(areaData.vol)==makeResponseStructParams.areaIndex);
+    areaIndices = ismember(abs(areaData.vol),makeResponseStructParams.areaIndex);
 end
 
 volDims                 = size(resp.vol);

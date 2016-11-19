@@ -46,6 +46,31 @@ switch regionTag
         eccFileName='mh.ecc.func.vol.nii.gz';
         areasIndex=1; % This indexes area V1
         eccRange=[17 30];
+    case 'V2-3_0-30'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=[2 3];
+        eccRange=[0 30];
+    case 'V2-3_0-2'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=[2 3];
+        eccRange=[0 2];
+    case 'V2-3_2-8'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=[2 3];
+        eccRange=[2 8];
+    case 'V2-3_8-17'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=[2 3];
+        eccRange=[8 17];
+    case 'V2-3_17-30'
+        areasFileName='mh.areas.func.vol.nii.gz';
+        eccFileName='mh.ecc.func.vol.nii.gz';
+        areasIndex=[2 3];
+        eccRange=[17 30];
     case 'LGN'
         areasFileName='mh.LGN.func.vol.nii.gz';
         eccFileName=[];
