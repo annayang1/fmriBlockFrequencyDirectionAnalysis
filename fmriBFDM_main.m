@@ -18,6 +18,12 @@ packetCacheBehavior='load';
 kernelCacheBehavior='load';
 resultCacheBehavior='make';
 
+stimulusCacheBehavior='skip';
+responseCacheBehavior='make';
+packetCacheBehavior='skip';
+kernelCacheBehavior='skip';
+resultCacheBehavior='skip';
+
 % Set the list of hashes that uniquely identify caches to load
 
 stimStructCellArrayHash = '033020e56f4e86a857cb0513b76742cf';
@@ -63,7 +69,8 @@ kernelStructCacheDir='kernelStructCache';
 resultsStructCacheDir='resultsStructCache';
 
 % Define the regions of interest to be studied
-regionTags={'V1_0-30' 'V1_0-2' 'V1_2-8' 'V1_8-17' 'V1_17-30' 'LGN' };
+regionTags={'V2-3_0-30' 'V2-3_0-2' 'V2-3_2-8' 'V2-3_8-17' 'V2-3_17-30' };
+%regionTags={'V1_0-30' 'V1_0-2' 'V1_2-8' 'V1_8-17' 'V1_17-30' 'LGN' };
 
 kernelRegion='V1_0-30';
 
