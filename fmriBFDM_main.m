@@ -195,7 +195,7 @@ if strcmp (resultCacheBehavior,'make');
 
         % Plot and save the TimeSeries
         for ss=1:length(plotHandles)
-            suptitle(plotHandles(ss),['TimeSeries for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+            fmriBDFM_suptitle(plotHandles(ss),['TimeSeries for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
             plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TimeSeries_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
             saveas(plotHandles(ss), plotFileName, 'pdf');
             close(plotHandles(ss));
@@ -211,7 +211,7 @@ if strcmp (resultCacheBehavior,'make');
         % Plot and save the TTFs
         plotHandles = fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
         for ss=1:length(plotHandles)
-            suptitle(plotHandles(ss),['TTFs for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+            fmriBDFM_suptitle(plotHandles(ss),['TTFs for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
             plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TTFs_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
             saveas(plotHandles(ss), plotFileName, 'pdf');
             close(plotHandles(ss));
@@ -220,7 +220,7 @@ if strcmp (resultCacheBehavior,'make');
         % Plot the carry-over matrices
         plotHandles = fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
         for ss=1:length(plotHandles)
-            suptitle(plotHandles(ss),['CarryOver for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+            fmriBDFM_suptitle(plotHandles(ss),['CarryOver for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
             plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['CarryOver_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
             saveas(plotHandles(ss), plotFileName, 'pdf');
             close(plotHandles(ss));
