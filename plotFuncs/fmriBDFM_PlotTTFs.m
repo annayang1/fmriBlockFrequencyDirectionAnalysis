@@ -1,4 +1,4 @@
-function [plotHandle]=fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray)
+function [plotHandles]=fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray)
 
 % Get the dimensions of the passed cell array
 nSubjects=size(fitResultsStructAvgResponseCellArray,1);
@@ -16,9 +16,10 @@ yAxisLimits=[-0.5 1.5];
 % alert the user
 fprintf('\t>> Generating TTF plots\n');
 
-plotHandle=figure();
-
 for ss=1:nSubjects
+    
+    plotHandles=figure();
+
     for ii=1:nDirections
 
         % Loop over the frequencies (and across the stimulus orders within
@@ -58,5 +59,6 @@ for ss=1:nSubjects
         
         % Set the ylim
         ylim(yAxisLimits);
+        
     end % loop over modulation directions
 end % loop over subjects
