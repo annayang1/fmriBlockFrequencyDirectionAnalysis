@@ -18,6 +18,7 @@ packetCacheBehavior='load';
 kernelCacheBehavior='load';
 resultCacheBehavior='make';
 
+% Define data cache behavior
 stimulusCacheBehavior='skip';
 responseCacheBehavior='make';
 packetCacheBehavior='skip';
@@ -113,8 +114,8 @@ if strcmp (responseCacheBehavior,'make');
         % calculate the hex MD5 hash for the responseCellArray
         responseStructCellArrayHash{tt} = DataHash(responseStructCellArray);
         
-        % Set path to the packetCache and save it using the MD5 hash name
-        responseStructCacheFileName=fullfile(responseDataDir, packetCacheDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash{tt} '.mat']);
+        % Set path to the responseStructCache and save it using the MD5 hash name
+        responseStructCacheFileName=fullfile(responseDataDir, responseStructCacheDir, [regionTags{tt} '_' responseStructCellArrayHash{tt} '.mat']);
         save(responseStructCacheFileName,'responseStructCellArray','-v7.3');
         fprintf(['Saved the responseStruct with hash ID ' responseStructCellArrayHash{tt} '\n']);
     end % loop over regions

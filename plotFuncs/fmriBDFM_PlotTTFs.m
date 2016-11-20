@@ -45,7 +45,7 @@ for ss=1:nSubjects
             fitWatsonToTTF_errorGuided(theFrequencies(2:7),meanAmplitudeByFreq(2:7),semAmplitudeByFreq(2:7),0);
         
         % Plot this subject / direction
-        subplot(nDirections,ii);
+        subplot(1, nDirections,ii);
         plot(frequenciesHz_fine,y+offset,[colorStr(ii) '-']);
         hold on
         errorbar(theFrequencies(2:7),meanAmplitudeByFreq(2:7),semAmplitudeByFreq(2:7),[colorStr(ii) 'o']);
