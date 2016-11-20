@@ -46,7 +46,7 @@ switch regionTagSplit{2}
         eccRange=[ EccBoundaries(str2num(regionTagSplit{2})) ...
             EccBoundaries(str2num(regionTagSplit{2})+1) ];
     case 'Full'
-        eccrange = [0 32];
+        eccRange = [0 32];
     case 'x'
         eccRange = [];
     otherwise
