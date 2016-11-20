@@ -17,68 +17,42 @@ responseSessDirs = {...
 whichSessionsToMerge = {[1 2], [3 4]};
 %whichSessionsToMerge = {[1]};
 
+EccBoundaries=[0, 1.2292, 5.0437, 11.4443, 20.4311, 32.0039, 46.1629];
+
 % Define the name of the response and areas file to load
 responseFileName='wdrf.tf.nii.gz';
 
-switch regionTag
-    case 'V1_0-30'
+regionTagSplit=strsplit(regionTag,'_');
+
+switch regionTagSplit{1}
+    case 'V1'
         areasFileName='mh.areas.func.vol.nii.gz';
         eccFileName='mh.ecc.func.vol.nii.gz';
         areasIndex=1; % This indexes area V1
-        eccRange=[0 30];
-    case 'V1_0-2'
+    case 'V23'
         areasFileName='mh.areas.func.vol.nii.gz';
         eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=1; % This indexes area V1
-        eccRange=[0 2];
-    case 'V1_2-8'
-        areasFileName='mh.areas.func.vol.nii.gz';
-        eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=1; % This indexes area V1
-        eccRange=[2 8];
-    case 'V1_8-17'
-        areasFileName='mh.areas.func.vol.nii.gz';
-        eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=1; % This indexes area V1
-        eccRange=[8 17];
-    case 'V1_17-30'
-        areasFileName='mh.areas.func.vol.nii.gz';
-        eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=1; % This indexes area V1
-        eccRange=[17 30];
-    case 'V2-3_0-30'
-        areasFileName='mh.areas.func.vol.nii.gz';
-        eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=[2 3];
-        eccRange=[0 30];
-    case 'V2-3_0-2'
-        areasFileName='mh.areas.func.vol.nii.gz';
-        eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=[2 3];
-        eccRange=[0 2];
-    case 'V2-3_2-8'
-        areasFileName='mh.areas.func.vol.nii.gz';
-        eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=[2 3];
-        eccRange=[2 8];
-    case 'V2-3_8-17'
-        areasFileName='mh.areas.func.vol.nii.gz';
-        eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=[2 3];
-        eccRange=[8 17];
-    case 'V2-3_17-30'
-        areasFileName='mh.areas.func.vol.nii.gz';
-        eccFileName='mh.ecc.func.vol.nii.gz';
-        areasIndex=[2 3];
-        eccRange=[17 30];
+        areasIndex=[2 3]; % This indexes areas V2/3
     case 'LGN'
         areasFileName='mh.LGN.func.vol.nii.gz';
         eccFileName=[];
         areasIndex=1; % This indexes the LGN
-        eccRange=[];
     otherwise
         error('That is not a regionTag that I know');
 end
+
+switch regionTagSplit{2}
+    case {'1','2','3','4','5','6'}
+        eccRange=[ EccBoundaries(str2num(regionTagSplit{2})) ...
+            EccBoundaries(str2num(regionTagSplit{2})+1) ];
+    case 'Full'
+        eccrange = [0 32];
+    case 'x'
+        eccRange = [];
+    otherwise
+        error('That is not an eccentricity range that I know');
+end
+
 
 for ss = 1:length(responseSessDirs)
     

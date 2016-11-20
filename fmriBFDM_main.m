@@ -13,13 +13,6 @@ warning on;
 
 % Define data cache behavior
 stimulusCacheBehavior='skip';
-responseCacheBehavior='load';
-packetCacheBehavior='load';
-kernelCacheBehavior='load';
-resultCacheBehavior='make';
-
-% Define data cache behavior
-stimulusCacheBehavior='skip';
 responseCacheBehavior='make';
 packetCacheBehavior='skip';
 kernelCacheBehavior='skip';
@@ -29,19 +22,9 @@ resultCacheBehavior='skip';
 
 stimStructCellArrayHash = '033020e56f4e86a857cb0513b76742cf';
 
-responseStructCellArrayHash = {'c2ef0b07d862edfbb503352f66ebf3db',...
-    '9d26651449df3650da8fd782f5a80b50',...
-    'b7a8755b84b5fa9aaf512dd3e9fc5576',...
-    '8b36cc768142b18f7a3fd811d7a334a5',...
-    'd7b07264a4fb0526751334ef380509b2',...
-    '96ad3facc2fb22f9586d05b1a224ef10'};
+responseStructCellArrayHash = {''};
 
-packetCellArrayHash = {'80ede36bd74ce86f61026bfc8610f5bb',...
-    '22250bd49971b59a6c0ec6d83854e590',...
-    '90567c08f18023e7b2c523e09eecfbdc',...
-    'a79545a43392fee9ada03e0cb3c3ecab',...
-    'b9bb1e3b5004213d465999d5f134ac26',...
-    'bbbbb589a04ea18e7451fb1c8333919f'};
+packetCellArrayHash = {''};
 
 kernelStructCellArrayHash = '4d49d67800895e0bf7d33f010a9f2bdf';
 
@@ -70,10 +53,11 @@ kernelStructCacheDir='kernelStructCache';
 resultsStructCacheDir='resultsStructCache';
 
 % Define the regions of interest to be studied
-regionTags={'V2-3_0-30' 'V2-3_0-2' 'V2-3_2-8' 'V2-3_8-17' 'V2-3_17-30' };
-%regionTags={'V1_0-30' 'V1_0-2' 'V1_2-8' 'V1_8-17' 'V1_17-30' 'LGN' };
+regionTags={'V1_Full' 'V1_1' 'V1_2' 'V1_3' 'V1_4' 'V1_5' 'V1_6' ...
+            'V23_Full' 'V23_1' 'V23_2' 'V23_3' 'V23_4' 'V23_5' 'V23_6' ...
+            'LGN' };
 
-kernelRegion='V1_0-30';
+kernelRegion='V1_Full';
 
 %% Make or load the stimStructure
 switch stimulusCacheBehavior
