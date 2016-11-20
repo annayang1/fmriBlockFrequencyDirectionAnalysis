@@ -1,4 +1,4 @@
-function [ plotHandle ] = fmriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
+function [ plotHandles ] = fmriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
 % function [  ] = fmriBDFM_AnalyzeCarryOverEffects( fitResultsStructAvgResponseCellArray )
 
 % Get the dimensions of the passed cell array
@@ -14,14 +14,17 @@ stimOrders={'A','B'};
 theFrequencies=[0,2,4,8,16,32,64];
 colorStr = 'krb';
 
-plotHandle=figure();
+plotHandles=figure();
 
 for ss=1:nSubjects
+    
+    plotHandles=figure();
+    
     for ii=1:nDirections
         responseMatrix=fmriBDFM_MakeCarryOverMatrix( fitResultsStructAvgResponseCellArray(ss,ii,:) );
         
         % Adjust the data to have a mean response of zero to zero frequency
-        % stimuli 
+        % stimuli
         zeroFrequencyValue=mean(responseMatrix(:,1));
         responseMatrix=responseMatrix-zeroFrequencyValue;
         
@@ -29,10 +32,8 @@ for ss=1:nSubjects
         imagesc(responseMatrix,clims(ii,:));
         title(modDirections(ii)); set(gca,'xticklabel',([0 2 4 8 16 32 64]));
         set(gca,'yticklabel',([0 2 4 8 16 32 64]));
-        if ss==nSubjects
-            xlabel('Current stimulus');
-        end
-        ylabel('Prior stimulus'); set(gca,'FontSize',15); colorbar;
+        xlabel('Current stimulus'); ylabel('Prior stimulus');
+        set(gca,'FontSize',15); colorbar;
     end
 end
 

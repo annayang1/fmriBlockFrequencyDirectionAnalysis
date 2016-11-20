@@ -3,6 +3,8 @@ function [responseStructCellAray] = fmriBFDM_LoadResponseStructCellArray(regionT
 %
 %
 
+verbosity='none';
+
 % Define the response file session directories
 responseSessDirs = {...
     'MOUNT_SINAI/HERO_asb1/041416' ...
@@ -73,7 +75,10 @@ for ss = 1:length(responseSessDirs)
     
     % Iterate over runs
     for ii = 1:nRuns;
-        fprintf('\t* Run <strong>%g</strong> / <strong>%g</strong>\n', ii, nRuns);
+        if strcmp(verbosity,'full');
+            fprintf('\t* Run <strong>%g</strong> / <strong>%g</strong>\n', ii, nRuns);
+        end
+        
         % Further define the params
         makeResponseStructParams.runNum           = ii;
         makeResponseStructParams.responseFile = fullfile(makeResponseStructParams.responseDir, runDirectoryList(ii), responseFileName);
