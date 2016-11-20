@@ -18,7 +18,7 @@ plotHandles=figure();
 
 for ss=1:nSubjects
     
-    plotHandles=figure();
+    plotHandles(ss)=figure();
     
     for ii=1:nDirections
         responseMatrix=fmriBDFM_MakeCarryOverMatrix( fitResultsStructAvgResponseCellArray(ss,ii,:) );
@@ -28,7 +28,7 @@ for ss=1:nSubjects
         zeroFrequencyValue=mean(responseMatrix(:,1));
         responseMatrix=responseMatrix-zeroFrequencyValue;
         
-        subplot(nSubjects,nDirections,ii+(ss-1)*nDirections);
+        subplot(1,nDirections,ii);
         imagesc(responseMatrix,clims(ii,:));
         title(modDirections(ii)); set(gca,'xticklabel',([0 2 4 8 16 32 64]));
         set(gca,'yticklabel',([0 2 4 8 16 32 64]));
