@@ -14,8 +14,8 @@ warning on;
 % Define data cache behavior
 stimulusCacheBehavior='skip';
 responseCacheBehavior='skip';
-packetCacheBehavior='load';
-kernelCacheBehavior='load';
+packetCacheBehavior='skip';
+kernelCacheBehavior='skip';
 resultCacheBehavior='make';
 
 % Set the list of hashes that uniquely identify caches to load
@@ -54,7 +54,7 @@ packetCellArrayHash = {'5d1e397ca29f5e91aaa6b7ca7d2babd4',...
     '5ac25e35104256b5dc563a091247ad76',...
     '1d5c00e39aea6a5bc6b4be80b13b8357'};
 
-kernelStructCellArrayHash = 'dcbd58d7ec2e3f3cf8ac92d4c73adb59';
+kernelStructCellArrayHash = '80a196a75e57858a9b4873e8ece4e4da';
 
 % Discover user name and find the Dropbox directory
 [~, userName] = system('whoami');
@@ -85,7 +85,7 @@ regionTags={'V1_Full' 'V1_1' 'V1_2' 'V1_3' 'V1_4' 'V1_5' 'V1_6' ...
     'V23_Full' 'V23_1' 'V23_2' 'V23_3' 'V23_4' 'V23_5' 'V23_6' ...
     'LGN_x' };
 
-kernelRegion='V1_Full';
+kernelRegion='MaxMelKernels';
 
 %% Make or load the stimStructure
 switch stimulusCacheBehavior
@@ -189,7 +189,7 @@ end % check if we are to make packets
 
 
 %% Make the kernelStruct for each subject, if requested
-if strcmp (kernelCacheBehavior,'make');
+if strcmp (kernelCacheBehavior,'makeFrom7TData');
     fprintf('>> Making the kernelStruct for each subject\n');
     
     % identify which packetCellArrayHash corresponds to the kernelRegion
@@ -207,6 +207,29 @@ if strcmp (kernelCacheBehavior,'make');
     
     % Set path to the packetCache and save it using the MD5 hash name
     kernelStructCacheFileName=fullfile(dropboxAnalysisDir, packetCacheDir, kernelStructCacheDir, [kernelRegion '_' kernelStructCellArrayHash '.mat']);
+    save(kernelStructCacheFileName,'hrfKernelStructCellArray','-v7.3');
+    fprintf(['Saved the kerneStructCellArray with hash ID ' kernelStructCellArrayHash '\n']);
+    
+end % Check if kernelStruct generation is requested
+
+if strcmp (kernelCacheBehavior,'makeFromMaxMel');
+    fprintf('>> Making the kernelStruct for each subject\n');
+    
+    subjectNames={'HERO_asb1','HERO_gka1'};
+    kernelHash={'be80e5482dfcf5e173c8d732ea5193c6','8e7166a99929c0aedda505fd9f9b665c'};
+    crossProtocolKernelDir=fullfile('/Users', userName, 'Dropbox-Aguirre-Brainard-Lab/Team Documents/Cross-Protocol Subjects/HERO_kernelStructCache');
+    
+    for ss=1:length(subjectNames)
+        kernelStructFileName=fullfile(crossProtocolKernelDir,[subjectNames{ss} '_hrf_' kernelHash{ss} '.mat' ]);
+        load(kernelStructFileName);
+        hrfKernelStructCellArray{ss}=kernelStruct;
+    end
+    
+    % calculate the hex MD5 hash for the hrfKernelStructCellArray
+    kernelStructCellArrayHash = DataHash(hrfKernelStructCellArray);
+    
+    % Set path to the packetCache and save it using the MD5 hash name
+    kernelStructCacheFileName=fullfile(dropboxAnalysisDir, packetCacheDir, kernelStructCacheDir, ['MaxMelKernels_' kernelStructCellArrayHash '.mat']);
     save(kernelStructCacheFileName,'hrfKernelStructCellArray','-v7.3');
     fprintf(['Saved the kerneStructCellArray with hash ID ' kernelStructCellArrayHash '\n']);
     
@@ -237,38 +260,40 @@ if strcmp (resultCacheBehavior,'make');
         % direction, and stimulus order
         [fitResultsStructAvgResponseCellArray, plotHandles] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
         
-        % Plot and save the TimeSeries
-        for ss=1:length(plotHandles)
-            fmriBDFM_suptitle(plotHandles(ss),['TimeSeries for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
-            plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TimeSeries_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
-            saveas(plotHandles(ss), plotFileName, 'pdf');
-            close(plotHandles(ss));
-        end
-        
-        % calculate the hex MD5 hash for the fitResultsStructAvgResponseCellArray
-        resultsStructCellArrayHash = DataHash(fitResultsStructAvgResponseCellArray);
-        
-        % Save the fitResultsStructAvgResponseCellArray
-        resultsStructCacheFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, [regionTags{tt} '_' packetCellArrayHash{tt} '.mat']);
-        save(resultsStructCacheFileName,'fitResultsStructAvgResponseCellArray','-v7.3');
-        
-        % Plot and save the TTFs
-        plotHandles = fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
-        for ss=1:length(plotHandles)
-            fmriBDFM_suptitle(plotHandles(ss),['TTFs for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
-            plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TTFs_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
-            saveas(plotHandles(ss), plotFileName, 'pdf');
-            close(plotHandles(ss));
-        end
-        
-        % Plot the carry-over matrices
-        plotHandles = fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
-        for ss=1:length(plotHandles)
-            fmriBDFM_suptitle(plotHandles(ss),['CarryOver for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
-            plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['CarryOver_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
-            saveas(plotHandles(ss), plotFileName, 'pdf');
-            close(plotHandles(ss));
-        end
+        fullResults(:,:,:,tt)=fitResultsStructAvgResponseCellArray;
+%         
+%         % Plot and save the TimeSeries
+%         for ss=1:length(plotHandles)
+%             fmriBDFM_suptitle(plotHandles(ss),['TimeSeries for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+%             plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TimeSeries_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
+%             saveas(plotHandles(ss), plotFileName, 'pdf');
+%             close(plotHandles(ss));
+%         end
+%         
+%         % calculate the hex MD5 hash for the fitResultsStructAvgResponseCellArray
+%         resultsStructCellArrayHash = DataHash(fitResultsStructAvgResponseCellArray);
+%         
+%         % Save the fitResultsStructAvgResponseCellArray
+%         resultsStructCacheFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, [regionTags{tt} '_' packetCellArrayHash{tt} '.mat']);
+%         save(resultsStructCacheFileName,'fitResultsStructAvgResponseCellArray','-v7.3');
+%         
+%         % Plot and save the TTFs
+%         plotHandles = fmriBDFM_PlotTTFs(fitResultsStructAvgResponseCellArray);
+%         for ss=1:length(plotHandles)
+%             fmriBDFM_suptitle(plotHandles(ss),['TTFs for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+%             plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['TTFs_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
+%             saveas(plotHandles(ss), plotFileName, 'pdf');
+%             close(plotHandles(ss));
+%         end
+%         
+%         % Plot the carry-over matrices
+%         plotHandles = fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
+%         for ss=1:length(plotHandles)
+%             fmriBDFM_suptitle(plotHandles(ss),['CarryOver for S' strtrim(num2str(ss)) ', ROI-' regionTags{tt}]);
+%             plotFileName=fullfile(dropboxAnalysisDir, packetCacheDir, resultsStructCacheDir, ['CarryOver_S' strtrim(num2str(ss)) '_ROI-' regionTags{tt} '_' packetCellArrayHash{tt} '.pdf']);
+%             saveas(plotHandles(ss), plotFileName, 'pdf');
+%             close(plotHandles(ss));
+%         end
         
     end % loop over regions
 end % Check if analysis is requested
