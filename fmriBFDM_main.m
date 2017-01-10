@@ -265,8 +265,7 @@ if strcmp (resultCacheBehavior,'make');
         
         % Fit the IAMP model to the average responses for each subject, modulation
         % direction, and stimulus order
-        [fitResultsStructAvgResponseCellArray, plotHandles] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);
-        
+        [fitResultsStructAvgResponseCellArray, plotHandles] = fmriBDFM_FitAverageResponsePackets(packetCellArray, hrfKernelStructCellArray);        
         fullResults(:,:,:,tt)=fitResultsStructAvgResponseCellArray;
         
         % Plot and save the TimeSeries
@@ -293,6 +292,13 @@ if strcmp (resultCacheBehavior,'make');
             close(plotHandles(ss));
         end
         
+        % Derive the peak frequency and amplitude by modulation
+        % direction for this eccentricity
+        [peakFreqArray,peakAmpArray]=fmriBDFM_DerivePeakAmpFreq(fitResultsStructAvgResponseCellArray);
+
+        peakFreqCellArray{tt}=peakFreqArray;
+        peakAmpCellArray{tt}=peakAmpArray;
+                
         % Plot the carry-over matrices
         plotHandles = fmriBDFM_AnalyzeCarryOverEffects(fitResultsStructAvgResponseCellArray);
         for ss=1:length(plotHandles)
@@ -303,6 +309,10 @@ if strcmp (resultCacheBehavior,'make');
         end
         
     end % loop over regions
+    
+    % Plot the responses by eccentricity
+    fmriBDFM_PlotAmpFreqByEccen(peakFreqCellArray,peakAmpCellArray);
+    
 end % Check if analysis is requested
 
 
