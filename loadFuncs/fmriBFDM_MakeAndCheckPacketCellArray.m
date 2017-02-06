@@ -17,8 +17,8 @@ packetCellArray=cell(size(stimStructCellArray));
 % Assemble the stim and response structs into a packet cell array. As we
 % loop, check to see if the metaData is compatible in the stim and
 % response.
-for ss=1:size(stimStructCellArray,2);
-    for rr=1:size(stimStructCellArray{1,ss},2);
+for ss=1:size(stimStructCellArray,2)
+    for rr=1:size(stimStructCellArray{1,ss},2)
         % Get the stim and response struct for this session and run
         stimStruct=stimStructCellArray{1,ss}{rr};
         responseStruct=responseStructCellArray{1,ss}{rr};

@@ -74,8 +74,8 @@ for ss = 1:length(responseSessDirs)
     fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong>\n', makeResponseStructParams.sessionObserver, makeResponseStructParams.sessionDate);
     
     % Iterate over runs
-    for ii = 1:nRuns;
-        if strcmp(verbosity,'full');
+    for ii = 1:nRuns
+        if strcmp(verbosity,'full')
             fprintf('\t* Run <strong>%g</strong> / <strong>%g</strong>\n', ii, nRuns);
         end
         

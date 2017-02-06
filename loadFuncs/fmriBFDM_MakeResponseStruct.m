@@ -4,19 +4,19 @@ function [values,timebase,metaData] = fmriBFDM_MakeResponseStruct(makeResponseSt
 %
 
 % load the response file
-resp                    = load_nifti(makeResponseStructParams.responseFile);
+resp = load_nifti(makeResponseStructParams.responseFile);
 
 % create the timebase
-TR                      = resp.pixdim(5)/1000;
-runDur                  = size(resp.vol,4);
+TR = resp.pixdim(5)/1000;
+runDur = size(resp.vol,4);
 timebase = (0:TR:(runDur*TR)-TR)*1000;
 
 % load the region of interest
 
-areaData                     = load_nifti(makeResponseStructParams.areasFile);
+areaData = load_nifti(makeResponseStructParams.areasFile);
 
 if ~isempty(makeResponseStructParams.eccFile)
-    eccData                      = load_nifti(makeResponseStructParams.eccFile);
+    eccData = load_nifti(makeResponseStructParams.eccFile);
     areaIndices = (ismember(abs(areaData.vol),makeResponseStructParams.areaIndex) &...
         eccData.vol>makeResponseStructParams.eccRange(1) &...
         eccData.vol<makeResponseStructParams.eccRange(2));
@@ -24,12 +24,12 @@ else
     areaIndices = ismember(abs(areaData.vol),makeResponseStructParams.areaIndex);
 end
 
-volDims                 = size(resp.vol);
-flatVol                 = reshape(resp.vol,volDims(1)*volDims(2)*volDims(3),volDims(4));
+volDims = size(resp.vol);
+flatVol  = reshape(resp.vol,volDims(1)*volDims(2)*volDims(3),volDims(4));
 
 % Assemble the values
-regionTimeSeries                = flatVol(areaIndices,:);
-regionalSignal                = median(regionTimeSeries,1);
+regionTimeSeries = flatVol(areaIndices,:);
+regionalSignal = median(regionTimeSeries,1);
 timeSeriesMean=mean(regionalSignal);
 regionalSignal=(regionalSignal-timeSeriesMean)/timeSeriesMean*100;
 values=regionalSignal;
