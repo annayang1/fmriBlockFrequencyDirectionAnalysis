@@ -116,7 +116,7 @@ end
 
 
 %% Make the responseStructCellArrays, if requested
-if strcmp (responseCacheBehavior,'make');
+if strcmp (responseCacheBehavior,'make')
     for tt = 1:length(regionTags)
         % inform the user
         fprintf(['>> Creating response structures for the region >' regionTags{tt} '<\n']);
@@ -148,7 +148,7 @@ end % check if we are to make responseStructs
 
 
 %% Make the packetCellArray, if requested
-if strcmp (packetCacheBehavior,'make');
+if strcmp (packetCacheBehavior,'make')
     for tt = 1:length(regionTags)
         
         % Load the responseStructs
@@ -190,7 +190,7 @@ end % check if we are to make packets
 
 
 %% Make the kernelStruct for each subject, if requested
-if strcmp (kernelCacheBehavior,'makeFrom7TData');
+if strcmp (kernelCacheBehavior,'makeFrom7TData')
     fprintf('>> Making the kernelStruct for each subject\n');
     
     % identify which packetCellArrayHash corresponds to the kernelRegion
@@ -213,7 +213,7 @@ if strcmp (kernelCacheBehavior,'makeFrom7TData');
     
 end % Check if kernelStruct generation is requested
 
-if strcmp (kernelCacheBehavior,'makeFromMaxMel');
+if strcmp (kernelCacheBehavior,'makeFromMaxMel')
     fprintf('>> Making the kernelStruct for each subject\n');
     
     subjectNames={'HERO_asb1','HERO_gka1'};
@@ -238,7 +238,7 @@ end % Check if kernelStruct generation is requested
 
 
 %% Perform the analysis, if requested
-if strcmp (resultCacheBehavior,'make');
+if strcmp (resultCacheBehavior,'make')
     % Load the kernelStruct
     kernelStructCacheFileName=fullfile(dropboxAnalysisDir, packetCacheDir, kernelStructCacheDir, [kernelRegion '_' kernelStructCellArrayHash '.mat']);
     load(kernelStructCacheFileName);

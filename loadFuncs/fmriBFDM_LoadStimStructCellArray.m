@@ -43,7 +43,7 @@ for ss = 1:length(stimulusSessDirs)
     fprintf('>> Processing <strong>%s</strong> | <strong>%s</strong> | <strong>%s</strong>\n', makeStimStructParams.sessionType, makeStimStructParams.sessionObserver, makeStimStructParams.sessionDate);
 
     % Iterate over runs
-    for ii = 1:nRuns;
+    for ii = 1:nRuns
         fprintf('\t* Run <strong>%g</strong> / <strong>%g</strong>\n', ii, nRuns);
         % Further define the params
         makeStimStructParams.runNum           = ii;
