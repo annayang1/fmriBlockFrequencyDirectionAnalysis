@@ -1,11 +1,8 @@
-function fmriBlockFrequencyDirectionAnalysisLocalHookTemplate
-% fmriBlockFrequencyDirectionAnalysisLocalHookTemplate
+function fmriBlockFrequencyDirectionAnalysisLocalHook
 %
-% For use with the ToolboxToolbox.  If you copy this into your
+% For use with the ToolboxToolbox.  Copy this into your
 % ToolboxToolbox localToolboxHooks directory (by defalut,
-% ~/localToolboxHooks) and delete "LocalHooksTemplate" from the filename,
-% this will get run when you execute tbUse({'fmriBlockFrequencyDirectionAnalysis'}) to set up for
-% this project.  You then edit your local copy to match your local machine.
+% ~/localToolboxHooks) and delete "Template" from the filename
 %
 % The thing that this does is add subfolders of the project to the path as
 % well as define Matlab preferences that specify input and output
@@ -15,26 +12,17 @@ function fmriBlockFrequencyDirectionAnalysisLocalHookTemplate
 % to match what is true on your computer.
 
 %% Say hello
-fprintf('Running fmriBlockFrequencyDirectionAnalysis local hook\n');
+fprintf('* Running fmriBlockFrequencyDirectionAnalysisLocalHook...');
 
 %% Set preferences
 
-% Obtain the Dropbox path
-[~, userID] = system('whoami');
-userID = strtrim(userID);
-switch userID
-    case {'melanopsin' 'pupillab'}
-        dropboxBaseDir = ['/Users/' userID '/Dropbox (Aguirre-Brainard Lab)/'];
-        dataPath = ['/Users/' userID '/Dropbox (Aguirre-Brainard Lab)/MELA_data/'];
-    case 'connectome'
-        dropboxBaseDir = ['/Users/' userID '/Dropbox (Aguirre-Brainard Lab)'];
-        dataPath = ['/Users/' userID '/Dropbox (Aguirre-Brainard Lab)/TOME_data/'];
-    otherwise
-        dropboxBaseDir = ['/Users/' userID '/Dropbox (Aguirre-Brainard Lab)'];
-        dataPath = ['/Users/' userID '/Dropbox (Aguirre-Brainard Lab)/MELA_data/'];
-end
+% Find the project directory, add it to the path, save this as a
+%  pref, and then make this the current directory
+projectDir = fullfile(tbLocateProject('fmriBlockFrequencyDirectionAnalysis'));
+addpath(genpath(projectDir));
+setpref('fmriBlockFrequencyDirectionAnalysis', 'projectDir', projectDir);
+cd(projectDir);
 
-addpath(genpath(['/Users/' userID '/Documents/MATLAB/Analysis/fmriBlockFrequencyDirectionAnalysis']));
 
 % Mount the cluster
 %  use sshfs to mount the cluster to a defined mount point.
@@ -43,6 +31,6 @@ addpath(genpath(['/Users/' userID '/Documents/MATLAB/Analysis/fmriBlockFrequency
 %  hang. These steps are designed to reset the ssfhfs system to resolve
 %  this problem prior to connecting. IT WILL NUKE ALL RUNNING SSHFS JOBS.
 
-system('pkill -9 sshfs');
-system('umount -f ~/ccnCluster');
-system('sshfs -p 22 aguirre@chead:/data/jag/ ~/ccnCluster -oauto_cache,reconnect,defer_permissions,noappledouble,negative_vncache,volname=ccnCluster');
+%system('pkill -9 sshfs');
+%system('umount -f ~/ccnCluster');
+%system('sshfs -p 22 aguirre@chead:/data/jag/ ~/ccnCluster -oauto_cache,reconnect,defer_permissions,noappledouble,negative_vncache,volname=ccnCluster');

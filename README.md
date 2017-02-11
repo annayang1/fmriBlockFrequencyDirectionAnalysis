@@ -11,7 +11,7 @@ into your localToolboxHooks directory. Remove the suffix "LocalHookTemplate" fro
 
 In Matlab, issue the tbUse command:
 
-	tbUse('mriBlockFrequencyDirectionAnalysis','reset','full');
+	tbUse('fmriBlockFrequencyDirectionAnalysis','reset','full');
 	
 The analysis is stated by running:
 

@@ -3,6 +3,19 @@
 		"flavor": "",
 		"hook": "",
 		"importance": "",
+		"localHookTemplate": "configuration/fmriBlockFrequencyDirectionAnalysisLocalHook",
+		"name": "fmriBlockFrequencyDirectionAnalysis",
+		"pathPlacement": "append",
+		"subfolder": "code",
+		"toolboxRoot": "",
+		"type": "git",
+		"update": "",
+		"url": ""
+	},
+	{
+		"flavor": "",
+		"hook": "",
+		"importance": "",
 		"localHookTemplate": "",
 		"name": "temporalFittingEngine",
 		"pathPlacement": "append",
@@ -11,11 +24,7 @@
 		"type": "git",
 		"update": "",
 		"url": "https:\/\/github.com\/gkaguirrelab\/temporalFittingEngine.git"
-	}
-]
-
-
-[
+	},
 	{
 		"flavor": "",
 		"hook": "",
@@ -28,10 +37,7 @@
 		"type": "git",
 		"update": "",
 		"url": "https:\/\/github.com\/gkaguirrelab\/MRklar.git"
-	}
-]
-
-[
+	},
 	{
 		"flavor": "",
 		"hook": "",
